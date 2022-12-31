@@ -1,5 +1,5 @@
 # xblstatus
-A discord bot for brining real time Xbox 360 status updates.
+A discord bot for bringing real time Xbox 360 status updates.
 
 # Commands
 
