@@ -83,10 +83,10 @@ client.on(Events.ClientReady, () => {
       } else return;
     });
     Log('SQL: 30mins query interval');
-    if (statusWS != null && (statusWS.readyState == statusWS.OPEN || statusWS.readyState == statusWS.CONNECTING)){
-    statusWS?.close();
-    ConnectWS();
-    Log('SOCKET: 30mins socket interval');
+    if (statusWS != null && (statusWS.readyState == statusWS.OPEN || statusWS.readyState == statusWS.CONNECTING)) {
+      statusWS?.close();
+      ConnectWS();
+      Log('SOCKET: 30mins socket interval');
     } else if (statusWS != null && (statusWS.readyState == statusWS.CLOSING || statusWS.readyState == statusWS.CLOSED)) {
       ConnectWS();
       Log('SOCKET: 30mins socket interval');
@@ -116,13 +116,21 @@ client.on(Events.InteractionCreate, async (interaction: Interaction) => {
             description: "XBLStatus WebSocket Erroed, we will look into this."
           }]
         });
+      } else if (lastSocketUpdate < 300) {
+        await interaction.editReply({
+          embeds: [{
+            color: Colors.Yellow,
+            author: { name: 'XBLStatus.com', url: 'https://xblstatus.com', icon_url: client.user!.avatarURL()! },
+            description: `Sorry unable to gather information from xblstatus.com, try again later!`
+          }]
+        });
       } else {
         let secsAgo = Math.round(Date.now() / 1000 - lastSocketUpdate / 1000)
         await interaction.editReply({
           embeds: [{
             color: Colors.Blue,
             author: { name: 'XBLStatus.com', url: 'https://xblstatus.com', icon_url: client.user!.avatarURL()! },
-            title: `Last Socket Message: ${secsAgo} ${secsAgo == 1 ? 'second' : 'seconds'} ago`,
+            title: `Last Update: ${secsAgo} ${secsAgo == 1 ? 'second' : 'seconds'} ago`,
             description: `${currentStatus.map(data => `${getEmoji(data.color)} ${data.name} - ${data.description}`).join('\n')}`
           }]
         });
@@ -315,7 +323,11 @@ function ConnectWS(): void {
     });
     return;
   }
-  statusWS = new WebSocket(Config.socketURL);
+  statusWS = new WebSocket(Config.socketURL, undefined, {
+    headers: {
+      ['Auth']: Config.auth_key
+    }
+  });
   statusWS.on('open', () => {
     statusErroed = false;
     Log('SOCKET: Connected');

@@ -16,6 +16,7 @@ export interface ConfigTypes {
     database: string;
   },
   cipher_key: string;
+  auth_key: string;
 }
 export interface WebSocketArrayData {
   name: string;
