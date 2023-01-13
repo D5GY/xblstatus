@@ -116,7 +116,7 @@ client.on(Events.InteractionCreate, async (interaction: Interaction) => {
             description: "XBLStatus WebSocket Erroed, we will look into this."
           }]
         });
-      } else if (lastSocketUpdate < 300) {
+      } else if (Math.round(Date.now() / 1000 - lastSocketUpdate / 1000) > 300) {
         await interaction.editReply({
           embeds: [{
             color: Colors.Yellow,
