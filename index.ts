@@ -122,10 +122,11 @@ client.on(Events.InteractionCreate, async (interaction: Interaction) => {
             color: Colors.Yellow,
             author: { name: 'XBLStatus.com', url: 'https://xblstatus.com', icon_url: client.user!.avatarURL()! },
             description: `Sorry unable to gather information from xblstatus.com, try again later!`
-          }]
+          }],
+          components: [new ActionRowBuilder<ButtonBuilder>().addComponents([new ButtonBuilder().setCustomId('last_status').setLabel('Retrive last status').setStyle(ButtonStyle.Primary)])]
         });
       } else {
-        let secsAgo = Math.round(Date.now() / 1000 - lastSocketUpdate / 1000)
+        let secsAgo = Math.round(Date.now() / 1000 - lastSocketUpdate / 1000);
         await interaction.editReply({
           embeds: [{
             color: Colors.Blue,
@@ -271,6 +272,18 @@ client.on(Events.InteractionCreate, async (interaction: Interaction) => {
           }]
         });
       }
+    } else if (interaction.customId == 'last_status') {
+      await interaction.deferUpdate();
+      let secsAgo = Math.round(Date.now() / 1000 - lastSocketUpdate / 1000);
+      await interaction.editReply({
+        embeds: [{
+          color: Colors.Blue,
+          author: { name: 'XBLStatus.com', url: 'https://xblstatus.com', icon_url: client.user!.avatarURL()! },
+          title: `Last Update: ${secsAgo} ${secsAgo == 1 ? 'second' : 'seconds'} ago`,
+          description: `${currentStatus.map(data => `${getEmoji(data.color)} ${data.name} - ${data.description}`).join('\n')}`
+        }],
+        components: []
+      });
     }
   }
 });
