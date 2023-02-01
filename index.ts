@@ -328,6 +328,7 @@ function Log(text: string): void {
 
 function ConnectWS(): void {
   if (statusWS != null && (statusWS.readyState == statusWS.OPEN || statusWS.readyState == statusWS.CONNECTING)) {
+    return;
     socketLogs.send({
       embeds: [{
         color: Colors.Yellow,
@@ -417,7 +418,10 @@ function getEmoji(color: string): string {
   else if (color == '#c50') return ':orange_circle:';
   else if (color == '#c00') return ':red_circle:';
 
-  else return ':black_circle:'
+  else {
+    Log(`Unknown Color: ${color}`);
+    return ':black_circle:'
+  }
 }
 
 /*function getEmoji(color: string): string {
