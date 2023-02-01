@@ -1,4 +1,4 @@
-import { Client, Colors, Events, Interaction, InteractionType, SlashCommandBuilder, PermissionFlagsBits, ChannelType, ChatInputCommandInteraction, Guild, WebhookClient, Message, GuildChannel, TextChannelResolvable, GuildChannelResolvable, Channel, TextChannel, ActionRowBuilder, ButtonBuilder, ButtonStyle, GatewayActivityButton, ButtonInteraction, APIMessageButtonInteractionData } from 'discord.js';
+import { Client, Colors, Events, Interaction, InteractionType, SlashCommandBuilder, PermissionFlagsBits, ChannelType, ChatInputCommandInteraction, Guild, WebhookClient, Message, GuildChannel, TextChannelResolvable, GuildChannelResolvable, Channel, TextChannel, ActionRowBuilder, ButtonBuilder, ButtonStyle, GatewayActivityButton, ButtonInteraction, APIMessageButtonInteractionData, Snowflake } from 'discord.js';
 import { ClientConfig, Config } from './config';
 import * as moment from 'moment';
 import * as fetch from 'node-fetch';
@@ -65,6 +65,23 @@ const clientCommands = [
   settingsInteraction.toJSON()
 ];
 
+enum defaultEmojis {
+  GREEN = ':green_circle:',
+  YELLOW = ':yellow_circle:',
+  ORANGE = ':orange_circle:',
+  RED = ':red_circle:',
+  BLACK = ':black_circle:'
+}
+
+enum customEmojis {
+  GREEN = '<:xbls_0c0:1054479964549959791>',
+  GOLD = '<:xbls_c80:1054479962117263441>',
+  YELLOW = '<:xbls_cc0:1054479963761410108>',
+  ORANGE = '<:xbls_c50:1054479961362284554>',
+  RED = '<:xbls_c00:1054479965728555009>',
+  BLACK = '<:xbls_000:1054485544391950486>'
+}
+
 client.on(Events.ClientReady, () => {
   Log(`${client.user!.tag} is online`);
 
@@ -126,13 +143,18 @@ client.on(Events.InteractionCreate, async (interaction: Interaction) => {
           components: [new ActionRowBuilder<ButtonBuilder>().addComponents([new ButtonBuilder().setCustomId('last_status').setLabel('Retrive last status').setStyle(ButtonStyle.Primary)])]
         });
       } else {
+        let type: string = 'default'
+        if (interaction.guild) {
+          const data: any = await query('SELECT emoji FROM settings WHERE guildID = ?', interaction.guild.id);
+          type = data[0].emoji;
+        }
         let secsAgo = Math.round(Date.now() / 1000 - lastSocketUpdate / 1000);
         await interaction.editReply({
           embeds: [{
             color: Colors.Blue,
             author: { name: 'XBLStatus.com', url: 'https://xblstatus.com', icon_url: client.user!.avatarURL()! },
             title: `Last Update: ${secsAgo} ${secsAgo == 1 ? 'second' : 'seconds'} ago`,
-            description: `${currentStatus.map(data => `${getEmoji(data.color)} ${data.name} - ${data.description}`).join('\n')}`
+            description: `${currentStatus.map(data => `${ getEmoji(data.color, type) } ${data.name} - ${data.description}`).join('\n')}`
           }]
         });
       }
@@ -274,13 +296,18 @@ client.on(Events.InteractionCreate, async (interaction: Interaction) => {
       }
     } else if (interaction.customId == 'last_status') {
       await interaction.deferUpdate();
+      let type: string = 'default'
+      if (interaction.guild) {
+        const data: any = await query('SELECT emoji FROM settings WHERE guildID = ?', interaction.guild.id);
+        type = data[0].emoji;
+      }
       let secsAgo = Math.round(Date.now() / 1000 - lastSocketUpdate / 1000);
       await interaction.editReply({
         embeds: [{
           color: Colors.Blue,
           author: { name: 'XBLStatus.com', url: 'https://xblstatus.com', icon_url: client.user!.avatarURL()! },
           title: `Last Update: ${secsAgo} ${secsAgo == 1 ? 'second' : 'seconds'} ago`,
-          description: `${currentStatus.map(data => `${getEmoji(data.color)} ${data.name} - ${data.description}`).join('\n')}`
+          description: `${currentStatus.map(data => `${getEmoji(data.color, type)} ${data.name} - ${data.description}`).join('\n')}`
         }],
         components: []
       });
@@ -403,7 +430,7 @@ function ConnectWS(): void {
           sendStatusWebhook(AES.decrypt(x.webhookURL, Config.cipher_key).toString(enc.Utf8), {
             color: Colors.Blue,
             author: { name: 'XBLStatus.com', url: 'https://xblstatus.com', icon_url: client.user!.avatarURL()! },
-            description: `Detected status change at time <t:${Math.floor(lastSocketUpdate / 1000)}:f>\n\n${currentStatus.map(data => `${getEmoji(data.color)} ${data.name} - ${data.description}`).join('\n')}`
+            description: `Detected status change at time <t:${Math.floor(lastSocketUpdate / 1000)}:f>\n\n${currentStatus.map(data => `${getEmoji(data.color, 'default')} ${data.name} - ${data.description}`).join('\n')}`
           });
         });
       }
@@ -411,28 +438,37 @@ function ConnectWS(): void {
   });
 }
 
-function getEmoji(color: string): string {
-  if (color == '#0c0') return ':green_circle:';
-  else if (color == '#c80') return ':orange_circle:';
-  else if (color == '#cc0') return ':yellow_circle:';
-  else if (color == '#c50') return ':orange_circle:';
-  else if (color == '#c00') return ':red_circle:';
+function getEmoji(color: string, type: string): string {
+  if (type === 'default') return getDefaultEmoji(color);
+  else if (type === 'custom') return getCustomEmoji(color);
+  else return getDefaultEmoji(color);
+}
+
+function getDefaultEmoji(color: string): string {
+  if (color == '#0c0') return defaultEmojis.GREEN;
+  else if (color == '#c80') return defaultEmojis.ORANGE;
+  else if (color == '#cc0') return defaultEmojis.YELLOW;
+  else if (color == '#c50') return defaultEmojis.ORANGE;
+  else if (color == '#c00') return defaultEmojis.RED;
 
   else {
     Log(`Unknown Color: ${color}`);
-    return ':black_circle:'
+    return defaultEmojis.BLACK;
   }
 }
 
-/*function getEmoji(color: string): string {
-  if (color == '#0c0') return '<:xbls_0c0:1054479964549959791>';
-  else if (color == '#c80') return '<:xbls_c80:1054479962117263441>';
-  else if (color == '#cc0') return '<:xbls_cc0:1054479963761410108>';
-  else if (color == '#c50') return '<:xbls_c50:1054479961362284554>';
-  else if (color == '#c00') return '<:xbls_c00:1054479965728555009>';
+function getCustomEmoji(color: string): string {
+  if (color == '#0c0') return customEmojis.GREEN;
+  else if (color == '#c80') return customEmojis.GOLD;
+  else if (color == '#cc0') return customEmojis.YELLOW;
+  else if (color == '#c50') return customEmojis.ORANGE;
+  else if (color == '#c00') return customEmojis.RED;
   
-  else return '<:xbls_000:1054485544391950486>'
-}*/
+  else {
+    Log(`Unknown Color: ${color}`);
+    return customEmojis.BLACK;
+  }
+}
 
 function sendStatusWebhook(url: string, json = {}) {
   fetch.default(url, {
