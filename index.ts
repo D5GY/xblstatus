@@ -47,7 +47,8 @@ const settingsInteraction = new SlashCommandBuilder()
           .setName('setting')
           .setDescription('Select the setting you want to edit.')
           .addChoices(
-            { name: 'xblStatus change webhook', value: 'webhook' }
+            { name: 'xblStatus change webhook', value: 'webhook' },
+            { name: 'xblStatus change emoji type', value: 'emoji' }
           )
           .setRequired(true)
       )
@@ -186,6 +187,7 @@ client.on(Events.InteractionCreate, async (interaction: Interaction) => {
             author: { name: 'XBLStatus.com', url: 'https://xblstatus.com', icon_url: client.user!.avatarURL()! },
             fields: [
               { name: 'Status Webhook', value: `${AES.decrypt(data[0].webhookURL, Config.cipher_key).toString(enc.Utf8)}` },
+              { name: 'Emoji Type', value: `${data[0].emoji}` }
             ]
           }]
         });
@@ -218,6 +220,40 @@ client.on(Events.InteractionCreate, async (interaction: Interaction) => {
             } else {
               await query('UPDATE settings SET webhookURL = ? WHERE guildID = ?',
                 AES.encrypt(value, Config.cipher_key).toString(),
+                interaction.guild?.id
+              );
+              await interaction.editReply({
+                embeds: [{
+                  color: Colors.Green,
+                  description: `successfully updated ${setting}`
+                }]
+              });
+            }
+          }
+        } else if (setting === 'emoji') {
+          if (!['custom', 'default'].includes(value!)) {
+            await interaction.editReply({
+              embeds: [{
+                color: Colors.Red,
+                description: 'Invalid value, your edit emoji value should be either: `default` or `custom`.'
+              }]
+            });
+          } else {
+            const guildInDB: any = await query('SELECT * FROM settings WHERE guildID = ?', interaction.guild?.id);
+            if (!guildInDB.length) {
+              await query('INSERT INTO settings (guildID, emoji) VALUES (? , ?)',
+                interaction.guild?.id,
+                value
+              );
+              await interaction.editReply({
+                embeds: [{
+                  color: Colors.Green,
+                  description: `successfully updated ${setting}`
+                }]
+              });
+            } else {
+              await query('UPDATE settings SET emoji = ? WHERE guildID = ?',
+                value,
                 interaction.guild?.id
               );
               await interaction.editReply({
