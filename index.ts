@@ -147,7 +147,8 @@ client.on(Events.InteractionCreate, async (interaction: Interaction) => {
         let type: string = 'default'
         if (interaction.guild) {
           const data: any = await query('SELECT emoji FROM settings WHERE guildID = ?', interaction.guild.id);
-          type = data[0].emoji;
+          if (!data.length) type = 'default';
+          else type = data[0].emoji;
         }
         let secsAgo = Math.round(Date.now() / 1000 - lastSocketUpdate / 1000);
         await interaction.editReply({
