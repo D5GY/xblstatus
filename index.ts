@@ -71,7 +71,8 @@ enum defaultEmojis {
   YELLOW = ':yellow_circle:',
   ORANGE = ':orange_circle:',
   RED = ':red_circle:',
-  BLACK = ':black_circle:'
+  BLACK = ':black_circle:',
+  WHITE = ':white_circle:'
 }
 
 enum customEmojis {
@@ -80,7 +81,8 @@ enum customEmojis {
   YELLOW = '<:xbls_cc0:1054479963761410108>',
   ORANGE = '<:xbls_c50:1054479961362284554>',
   RED = '<:xbls_c00:1054479965728555009>',
-  BLACK = '<:xbls_000:1054485544391950486>'
+  BLACK = '<:xbls_000:1054485544391950486>',
+  GRAY = '<:xbls_ccc:1071244643313913906>'
 }
 
 client.on(Events.ClientReady, () => {
@@ -336,7 +338,8 @@ client.on(Events.InteractionCreate, async (interaction: Interaction) => {
       let type: string = 'default'
       if (interaction.guild) {
         const data: any = await query('SELECT emoji FROM settings WHERE guildID = ?', interaction.guild.id);
-        type = data[0].emoji;
+        if (!data.length) type = 'default';
+        else type = data[0].emoji;
       }
       let secsAgo = Math.round(Date.now() / 1000 - lastSocketUpdate / 1000);
       await interaction.editReply({
@@ -487,9 +490,10 @@ function getDefaultEmoji(color: string): string {
   else if (color == '#cc0') return defaultEmojis.YELLOW;
   else if (color == '#c50') return defaultEmojis.ORANGE;
   else if (color == '#c00') return defaultEmojis.RED;
+  else if (color == '#ccc') return defaultEmojis.WHITE;
 
   else {
-    Log(`Unknown Color: ${color}`);
+    errorLogs.send(`Unknown Color: ${color}`);
     return defaultEmojis.BLACK;
   }
 }
@@ -500,9 +504,10 @@ function getCustomEmoji(color: string): string {
   else if (color == '#cc0') return customEmojis.YELLOW;
   else if (color == '#c50') return customEmojis.ORANGE;
   else if (color == '#c00') return customEmojis.RED;
+  else if (color == '#ccc') return customEmojis.GRAY;
   
   else {
-    Log(`Unknown Color: ${color}`);
+    errorLogs.send(`Unknown Color: ${color}`);
     return customEmojis.BLACK;
   }
 }
