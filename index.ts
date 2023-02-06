@@ -134,7 +134,8 @@ client.on(Events.InteractionCreate, async (interaction: Interaction) => {
             color: Colors.Blue,
             author: { name: 'XBLStatus.com', url: 'https://xblstatus.com', icon_url: client.user!.avatarURL()! },
             description: "XBLStatus WebSocket Erroed, we will look into this."
-          }]
+          }],
+          components: [new ActionRowBuilder<ButtonBuilder>().addComponents([new ButtonBuilder().setCustomId('last_status').setLabel('Retrive last status').setStyle(ButtonStyle.Primary)])]
         });
       } else if (Math.round(Date.now() / 1000 - lastSocketUpdate / 1000) > 300) {
         await interaction.editReply({
