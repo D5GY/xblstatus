@@ -1,6 +1,6 @@
-import { InteractionType, Snowflake } from 'discord.js'
+import { Snowflake } from 'discord.js';
 export interface ConfigTypes {
-  DEV_MODE: Boolean;
+  DEV_MODE: boolean;
   DEV_TOKEN: Snowflake;
   PRODUCTION_TOKEN: Snowflake;
   socketURL: string;
