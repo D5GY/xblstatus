@@ -390,6 +390,35 @@ client.on(Events.GuildDelete, async (guild: Guild) => {
 	});
 });
 
+client.on(Events.Error, (error) => {
+	Log(error.message);
+	errorLogs.send({
+		embeds: [{
+			color: Colors.Red,
+			title: 'Client Error event',
+			description: error.name,
+			fields: [
+				{ name: 'Error Message', value: error.message },
+				{ name: 'Error Time', value: `<t:${Math.floor(Date.now()/1000)}:R>` }
+			]
+		}]
+	});
+	process.exit();
+});
+client.on(Events.Warn, (message) => {
+	Log(message);
+	errorLogs.send({
+		embeds: [{
+			color: Colors.Red,
+			title: 'Client Warn event',
+			fields: [
+				{ name: 'Warn Message', value: message },
+				{ name: 'Warn Time', value: `<t:${Math.floor(Date.now()/1000)}:R>` }
+			]
+		}]
+	});
+});
+
 function Log(text: string): void {
 	console.log(`[${moment().format('lll')}] - ${text}`);
 }
