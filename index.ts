@@ -403,7 +403,6 @@ client.on(Events.Error, (error) => {
 			]
 		}]
 	});
-	process.exit();
 });
 client.on(Events.Warn, (message) => {
 	Log(message);
