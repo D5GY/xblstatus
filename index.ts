@@ -418,6 +418,27 @@ client.on(Events.Warn, (message) => {
 	});
 });
 
+process.on('uncaughtException', (error: Error) => {
+	Log(error.stack ?? 'Unknown');
+	errorLogs.send({
+		embeds: [{
+			color: Colors.Blue,
+			author: { name: 'XBLStatus Error: uncaughtException', icon_url: client.user?.avatarURL()! },
+			fields: [{
+				name: 'Error',
+				value: error.name
+			}, {
+				name: 'Error Message',
+				value: error.message
+			}, {
+				name: 'Error Cause',
+				value: error.cause as string ?? 'unknown'
+			}]
+		}],
+		content: '<@1004109994888798218>'
+	});
+});
+
 function Log(text: string): void {
 	console.log(`[${moment().format('lll')}] - ${text}`);
 }
