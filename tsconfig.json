@@ -8,7 +8,7 @@
     "removeComments": true,
     "alwaysStrict": true,
     "pretty": true,
-    "outDir": "./",
+    "outDir": "./compiled",
     "resolveJsonModule": true,
     "skipLibCheck": true
   },
