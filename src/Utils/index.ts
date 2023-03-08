@@ -5,6 +5,7 @@ import { Config } from './config';
 import { readdirSync } from 'fs';
 import { xbls } from '../Client';
 import { defaultEmojis } from './enums';
+import fetch from 'node-fetch';
 
 export class Util extends null {
 	public static client: Client;
@@ -55,6 +56,20 @@ export class Util extends null {
 		else if (color == '#c00') return defaultEmojis.RED;
 		else if (color == '#ccc') return defaultEmojis.WHITE;
 		else return defaultEmojis.BLACK;
+	};
+
+	public static postStatusWebhookChange = (url: string, json = {}) => {
+		fetch(url, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				embeds: [json]
+			})
+		}).catch((error) => {
+			throw error;
+		});
 	};
 
 }

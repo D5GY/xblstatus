@@ -1,3 +1,5 @@
+import { Snowflake } from 'discord-api-types/v10';
+
 export enum Colors {
   BLUE = 0x3366cc,
   GREEN = 0x00cc00,
@@ -11,4 +13,13 @@ export enum defaultEmojis {
 	RED = ':red_circle:',
 	BLACK = ':black_circle:',
 	WHITE = ':white_circle:'
+}
+export interface SQLsettingsData {
+  guildID: Snowflake;
+  webhookURL: string;
+}
+export interface WebSocketArrayData {
+  name: string;
+  description: string;
+  color: string;
 }

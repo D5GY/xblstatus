@@ -4,6 +4,7 @@ import { ConfigTypes, WSArrayData } from '../Utils/types';
 import { Config } from '../Utils/config';
 import { Colors } from '../Utils/enums';
 import { Util } from '../Utils';
+import { Database } from '../Utils/database';
 
 export class xbls extends Client {
 	config: ConfigTypes;
@@ -15,6 +16,7 @@ export class xbls extends Client {
 	statusSocketErrored: boolean;
 	currentStatus: Array<WSArrayData>;
 	oldStatus: Array<WSArrayData>;
+	database: typeof Database;
 
 	constructor() {
 		super(clientConfig);
@@ -28,6 +30,7 @@ export class xbls extends Client {
 		this.statusSocketErrored = false;
 		this.currentStatus = [];
 		this.oldStatus = [];
+		this.database = Database;
 
 	}
 	start(): void {

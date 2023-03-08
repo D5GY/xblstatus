@@ -6,10 +6,11 @@ const client = new xbls();
 client.start();
 
 client.on(Events.ClientReady, async () => {
+	console.log(`${client.user!.tag} is online`);
 	await client.utils.deployCommands();
 	await client.utils.loadInteractions(client.commands);
 	connectWS(client);
-	console.log(`${client.user!.tag} is online`);
+	await client.database.connect();
 });
 
 client.on(Events.InteractionCreate, async interaction => {

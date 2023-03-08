@@ -19,7 +19,8 @@ export interface ConfigTypes {
 		GUILD_LEAVE: string;
 		SOCKET: string;
 		ERROR: string;
-	}
+	};
+	CIPHER_KEY: string;
 }
 export interface WSArrayData {
 	name: string;
