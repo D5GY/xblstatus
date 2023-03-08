@@ -26,11 +26,13 @@ client.on(Events.InteractionCreate, async interaction => {
 		}
 		try {
 			await interactionExecuted.execute(interaction, client);
-		} catch (error) {
-			interaction.reply({
+		} catch (error: any) {
+			if (error.name === 'DiscordAPIError[10062]') return;
+			console.error(error);
+			interaction.channel?.send({
 				embeds: [
 					client.utils.defaultEmbed(client, client.Colors.RED)
-						.setDescription('Something went wronggggg')
+						.setDescription('An unknown error occurred, this has been logged and will be looked into')
 				]
 			});
 		}
