@@ -36,3 +36,16 @@ client.on(Events.InteractionCreate, async interaction => {
 		}
 	}
 });
+
+client.on('error', (error) => {
+	console.error(error);
+});
+client.on('warn', (message) => {
+	console.log(message);
+});
+process.on('uncaughtException', (error) => {
+	console.error(error);
+});
+process.on('warning', (error) => {
+	console.error(error);
+});
