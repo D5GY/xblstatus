@@ -16,14 +16,26 @@ export function connectWS(client: xbls) {
 	statusWS.on('open', () => {
 		client.statusSocketErrored = false;
 		console.log('SOCKET: Connected');
+		setInterval(() => {
+			if (statusWS !== undefined && (statusWS.readyState === statusWS.OPEN || statusWS.readyState === statusWS.CONNECTING)) {
+				statusWS.close();
+				connectWS(client);
+				console.log('SOCKET: 30mins socket interval');
+			} else {
+				connectWS(client);
+				console.log('SOCKET: 30mins socket interval');
+			}
+		}, 1.8e+6);
+		console.log('SOCKET: 30mins socket reconnect started');
 	});
 
 	statusWS.on('error', (error: Error) => {
 		console.error(error);
 	});
 
-	statusWS.on('close', (code: number, reason: Buffer) => {
-		console.log(`code: ${code}\n\nreason: ${reason.toString()}`);
+	statusWS.on('close', () => {
+		console.log('SOCKET: Closed');
+		connectWS(client);
 	});
 	
 	statusWS.on('message', async (data: websocket.RawData) => {
@@ -36,6 +48,7 @@ export function connectWS(client: xbls) {
 				client.currentStatus.push(response.services[i]);
 			}
 			if (JSON.stringify(client.oldStatus) !== JSON.stringify(client.currentStatus)) {
+				return;
 				if (client.config.DEV_MODE) return;
 				const data: any = await client.database.query('SELECT * FROM settings');
 				if (!data) return;
@@ -50,15 +63,4 @@ export function connectWS(client: xbls) {
 			}
 		}
 	});
-
-	setInterval(() => {
-		if (statusWS !== undefined && (statusWS.readyState === statusWS.OPEN || statusWS.readyState === statusWS.CONNECTING)) {
-			statusWS.close();
-			connectWS(client);
-			console.log('SOCKET: 30mins socket interval');
-		} else if (statusWS != null && (statusWS.readyState == statusWS.CLOSING || statusWS.readyState == statusWS.CLOSED)) {
-			connectWS(client);
-			console.log('SOCKET: 30mins socket interval');
-		}
-	}, 1.8e+6);
 }
