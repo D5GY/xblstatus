@@ -7,10 +7,10 @@ client.start();
 
 client.on(Events.ClientReady, async () => {
 	console.log(`${client.user!.tag} is online`);
-	await client.utils.deployCommands();
-	await client.utils.loadInteractions(client.commands);
+	await client.utils.deployCommands().catch(error => console.error(error));
+	await client.utils.loadInteractions(client.commands).catch(error => console.error(error));
 	connectWS(client);
-	await client.database.connect();
+	await client.database.connect()?.catch(error => console.error(error));
 });
 
 client.on(Events.InteractionCreate, async interaction => {
