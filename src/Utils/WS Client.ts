@@ -3,6 +3,7 @@ import * as websocket from 'ws';
 import { SQLsettingsData } from './enums';
 import { AES, enc } from 'crypto-js';
 let statusWS: undefined | websocket = undefined;
+let socketKeepAlive: null | NodeJS.Timeout = null;
 
 export function connectWS(client: xbls) {
 	if (statusWS != undefined && (statusWS.readyState === statusWS.OPEN || statusWS.readyState === statusWS.CONNECTING)) return;
@@ -16,26 +17,39 @@ export function connectWS(client: xbls) {
 	statusWS.on('open', () => {
 		client.statusSocketErrored = false;
 		console.log('SOCKET: Connected');
-		setInterval(() => {
-			if (statusWS !== undefined && (statusWS.readyState === statusWS.OPEN || statusWS.readyState === statusWS.CONNECTING)) {
-				statusWS.close();
-				connectWS(client);
-				console.log('SOCKET: 30mins socket interval');
-			} else {
-				connectWS(client);
-				console.log('SOCKET: 30mins socket interval');
-			}
-		}, 1.8e+6);
-		console.log('SOCKET: 30mins socket reconnect started');
+		if (socketKeepAlive === null) {
+			socketKeepAlive = setInterval(() => {
+				if (statusWS !== undefined && (statusWS.readyState === statusWS.OPEN || statusWS.readyState === statusWS.CONNECTING)) {
+					statusWS.close();
+					connectWS(client);
+					console.log('SOCKET: 30mins socket interval');
+				} else {
+					connectWS(client);
+					console.log('SOCKET: 30mins socket interval');
+				}
+			}, 1.8e+6);
+			console.log('SOCKET: 30mins socket reconnect started');
+		}
+		if (client.socketRetryInterval !== null) {
+			clearInterval(client.socketRetryInterval);
+			client.socketRetryInterval = null;
+			console.log('SOCKET: Cleared socket retry interval');
+		}
 	});
 
 	statusWS.on('error', (error: Error) => {
+		client.statusSocketErrored = true;
 		console.error(error);
 	});
 
 	statusWS.on('close', () => {
 		console.log('SOCKET: Closed');
-		connectWS(client);
+		if (client.socketRetryInterval === null) {
+			client.socketRetryInterval = setInterval(() => {
+				connectWS(client);
+			}, 60 * 1000);
+			console.log('SOCKET: Retry Interval Started');
+		}
 	});
 	
 	statusWS.on('message', async (data: websocket.RawData) => {
