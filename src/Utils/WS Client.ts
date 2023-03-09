@@ -48,7 +48,6 @@ export function connectWS(client: xbls) {
 				client.currentStatus.push(response.services[i]);
 			}
 			if (JSON.stringify(client.oldStatus) !== JSON.stringify(client.currentStatus)) {
-				return;
 				if (client.config.DEV_MODE) return;
 				const data: any = await client.database.query('SELECT * FROM settings');
 				if (!data) return;
