@@ -10,6 +10,7 @@ export class xbls extends Client {
 	config: ConfigTypes;
 	Colors: typeof Colors;
 	commands = new Collection<string, unknown>();
+	buttons = new Collection<string, unknown>();
 	utils: typeof Util;
 	socketRetryInterval: null | NodeJS.Timeout;
 	lastSocketUpdate: number;
@@ -24,6 +25,7 @@ export class xbls extends Client {
 		this.config = Config;
 		this.Colors = Colors;
 		this.commands;
+		this.buttons;
 		this.utils = Util;
 		this.socketRetryInterval = null;
 		this.lastSocketUpdate = NaN;

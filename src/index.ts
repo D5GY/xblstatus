@@ -8,7 +8,7 @@ client.start();
 client.on(Events.ClientReady, async () => {
 	console.log(`${client.user!.tag} is online`);
 	await client.utils.deployCommands().catch(error => console.error(error));
-	await client.utils.loadInteractions(client.commands).catch(error => console.error(error));
+	await client.utils.loadInteractions(client.commands, client.buttons).catch(error => console.error(error));
 	connectWS(client);
 	await client.database.connect()?.catch(error => console.error(error));
 });
@@ -26,6 +26,28 @@ client.on(Events.InteractionCreate, async interaction => {
 		}
 		try {
 			await interactionExecuted.execute(interaction, client);
+		} catch (error: any) {
+			if (error.name === 'DiscordAPIError[10062]') return;
+			console.error(error);
+			interaction.channel?.send({
+				embeds: [
+					client.utils.defaultEmbed(client, client.Colors.RED)
+						.setDescription('An unknown error occurred, this has been logged and will be looked into')
+				]
+			});
+		}
+	} else if (interaction.isButton()) {
+		const button: any = client.buttons.get(interaction.customId);
+		if (!button) {
+			await interaction.reply({
+				embeds: [
+					client.utils.defaultEmbed(client, client.Colors.RED)
+						.setDescription('An unknown error occurred, this has been logged and will be looked into.')
+				]
+			});
+		}
+		try {
+			await button.execute(interaction, client);
 		} catch (error: any) {
 			if (error.name === 'DiscordAPIError[10062]') return;
 			console.error(error);

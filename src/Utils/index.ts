@@ -33,7 +33,7 @@ export class Util extends null {
 		console.log('Interaction Commands Set');
 	};
 	
-	public static loadInteractions = async (commandCollection: Collection<string, any>) => {
+	public static loadInteractions = async (commandCollection: Collection<string, any>, buttonCollection: Collection<string, any>) => {
 		const interactionDir = `${__dirname}/../Interactions`;
 		const interactionTypes = readdirSync(interactionDir);
 		for (const interactionType of interactionTypes) {
@@ -42,6 +42,12 @@ export class Util extends null {
 				for (const cmdFile of cmdFiles) {
 					const cmd = await require(`${interactionDir}/${interactionType}/${cmdFile}`);
 					commandCollection.set(cmd.name, cmd);
+				}
+			} else if (interactionType == 'Buttons') {
+				const btnFiles = readdirSync(`${interactionDir}/${interactionType}`);
+				for (const btnFile of btnFiles) {
+					const btn = await require(`${interactionDir}/${interactionType}/${btnFile}`);
+					buttonCollection.set(btn.name, btn);
 				}
 			}
 		}
