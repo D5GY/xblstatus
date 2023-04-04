@@ -1,5 +1,5 @@
 import { xbls } from './Client';
-import { Events } from 'discord.js';
+import { Events, WebhookClient } from 'discord.js';
 import { InteractionType } from 'discord-api-types/v10';
 import { connectWS } from './Utils/WS Client';
 const client = new xbls();
@@ -59,6 +59,39 @@ client.on(Events.InteractionCreate, async interaction => {
 			});
 		}
 	}
+});
+
+const GUILD_JOIN_WEBHOOK = new WebhookClient({ url: client.config.WEBHOOKS.GUILD_JOIN });
+client.on(Events.GuildCreate, async guild => {
+	const guildOwner = await guild.fetchOwner();
+	GUILD_JOIN_WEBHOOK.send({
+		embeds: [{
+			color: client.Colors.BLUE,
+			description: 'New Guild Joined',
+			fields: [
+				{ name: 'Guild Name / ID', value: `${guild.name}\n${guild.id}`, inline: true },
+				{ name: 'Guild Owner / ID', value: `${guildOwner.user}\n${guildOwner.user.tag}\n${guild.ownerId}`, inline: true }
+			],
+			thumbnail: { url: guild.iconURL() ?? client.user!.avatarURL()! },
+			footer: { text: `Guild Count: ${client.guilds.cache.size} | Guild Mem Count: ${guild.memberCount}` }
+		}]
+	});
+});
+const GUILD_LEAVE_WEBHOOK = new WebhookClient({ url: client.config.WEBHOOKS.GUILD_LEAVE });
+client.on(Events.GuildDelete, async guild => {
+	const guildOwner = await guild.fetchOwner();
+	GUILD_LEAVE_WEBHOOK.send({
+		embeds: [{
+			color: client.Colors.BLUE,
+			description: 'Guild Left',
+			fields: [
+				{ name: 'Guild Name / ID', value: `${guild.name}\n${guild.id}`, inline: true },
+				{ name: 'Guild Owner / ID', value: `${guildOwner.user}\n${guildOwner.user.tag}\n${guild.ownerId}`, inline: true }
+			],
+			thumbnail: { url: guild.iconURL() ?? client.user!.avatarURL()! },
+			footer: { text: `Guild Count: ${client.guilds.cache.size} | Guild Mem Count: ${guild.memberCount}` }
+		}]
+	});
 });
 
 client.on('error', (error) => {
