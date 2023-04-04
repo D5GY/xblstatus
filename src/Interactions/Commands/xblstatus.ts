@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, CommandInteraction } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction } from 'discord.js';
 import { xbls } from '../../Client';
 
 const LAST_STATUS_BUTTON = new ActionRowBuilder<ButtonBuilder>().addComponents(
@@ -13,7 +13,7 @@ const LAST_STATUS_BUTTON = new ActionRowBuilder<ButtonBuilder>().addComponents(
 
 module.exports = {
 	name: 'xblstatus',
-	async execute(interaction: CommandInteraction, client: xbls) {
+	async execute(interaction: ChatInputCommandInteraction, client: xbls) {
 		await interaction.deferReply({ ephemeral: false });
 		const secsAgo: number = (Math.floor(Math.round(Date.now() / 1000 - client.lastSocketUpdate / 1000)));
 
