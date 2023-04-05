@@ -45,23 +45,25 @@ module.exports = {
 
 			const isGuildInDatabase: any = await client.database.query('SELECT * FROM settings WHERE guildID = ?', interaction.guild!.id);
 			if (!isGuildInDatabase.length) {
-				await client.database.query(`INSERT INTO settings (guildID, ${setting === 'webhook' ? 'webhookURL' : 'emoji'}) VALUES (?, ?)`,
+				const res: any = await client.database.query(`INSERT INTO settings (guildID, ${setting === 'webhook' ? 'webhookURL' : 'emoji'}) VALUES (?, ?)`,
 					interaction.guild!.id,
 					setting === 'webhook' ? AES.encrypt(value!, client.config.CIPHER_KEY).toString() : value!);
 				return interaction.editReply({
 					embeds: [
 						client.utils.defaultEmbed(client, client.Colors.GREEN)
 							.setDescription(`Successfully updated ${setting}`)
+							.setFooter({ text: res.info })
 					]
 				});
 			}
-			await client.database.query(`UPDATE settings SET ${setting === 'webhook' ? 'webhookURL' : 'emoji'} = ? WHERE guildID = ?`, 
+			const res: any = await client.database.query(`UPDATE settings SET ${setting === 'webhook' ? 'webhookURL' : 'emoji'} = ? WHERE guildID = ?`, 
 				setting === 'webhook' ? AES.encrypt(value!, client.config.CIPHER_KEY).toString() : value!,
 				interaction.guild!.id);
 			return interaction.editReply({
 				embeds: [
 					client.utils.defaultEmbed(client, client.Colors.GREEN)
 						.setDescription(`Successfully updated ${setting}`)
+						.setFooter({ text: res.info })
 				]
 			});
 		}
