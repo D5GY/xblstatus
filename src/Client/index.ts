@@ -1,4 +1,4 @@
-import { Client, Collection } from 'discord.js';
+import { Client, Collection, WebhookClient } from 'discord.js';
 import { clientConfig } from './clientOptions';
 import { ConfigTypes, WSArrayData } from '../Utils/types';
 import { Config } from '../Utils/config';
@@ -18,6 +18,7 @@ export class xbls extends Client {
 	currentStatus: Array<WSArrayData>;
 	oldStatus: Array<WSArrayData>;
 	database: typeof Database;
+	error: WebhookClient;
 
 	constructor() {
 		super(clientConfig);
@@ -33,7 +34,7 @@ export class xbls extends Client {
 		this.currentStatus = [];
 		this.oldStatus = [];
 		this.database = Database;
-
+		this.error = new WebhookClient({ url: this.config.WEBHOOKS.ERROR });
 	}
 	start(): void {
 		super.login(this.config.DEV_MODE ? this.config.DEV_TOKEN : this.config.PRODUCTION_TOKEN);

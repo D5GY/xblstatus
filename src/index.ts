@@ -99,13 +99,67 @@ client.on(Events.GuildDelete, async guild => {
 
 client.on('error', (error) => {
 	console.error(error);
+	client.error.send({
+		content: '<@1004109994888798218>',
+		embeds: [
+			client.utils.defaultEmbed(client, client.Colors.RED)
+				.setTitle('uncaughtException')
+				.setFields(
+					{ name: 'Error Name', value: error.name, inline: true },
+					{ name: 'Error Message', value: error.message, inline: true },
+					{ name: 'Error Stack', value: error.stack ?? 'No stack message' }
+				)
+		]
+	}).catch(error => {
+		throw error;
+	});
 });
 client.on('warn', (message) => {
 	console.log(message);
+	client.error.send({
+		content: '<@1004109994888798218>',
+		embeds: [
+			client.utils.defaultEmbed(client, client.Colors.RED)
+				.setTitle('Client Warning')
+				.setFields(
+					{ name: 'Warn Message', value: message },
+				)
+		]
+	}).catch(error => {
+		throw error;
+	});
 });
 process.on('uncaughtException', (error) => {
 	console.error(error);
+	client.error.send({
+		content: '<@1004109994888798218>',
+		embeds: [
+			client.utils.defaultEmbed(client, client.Colors.RED)
+				.setTitle('uncaughtException')
+				.setFields(
+					{ name: 'Error Name', value: error.name, inline: true },
+					{ name: 'Error Message', value: error.message, inline: true },
+					{ name: 'Error Stack', value: error.stack ?? 'No stack message' }
+				)
+		]
+	}).catch(error => {
+		throw error;
+	});
 });
 process.on('warning', (error) => {
 	console.error(error);
+	client.error.send({
+		content: '<@1004109994888798218>',
+		embeds: [
+			client.utils.defaultEmbed(client, client.Colors.YELLOW)
+				.setTitle('Process Warning')
+				.setFields(
+					{ name: 'Error Name', value: error.name, inline: true },
+					{ name: 'Error Message', value: error.message, inline: true },
+					{ name: 'Error Stack', value: error.stack ?? 'No stack message' }
+				)
+		]
+	}).catch(error => {
+		throw error;
+	});
 });
