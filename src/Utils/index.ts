@@ -1,6 +1,6 @@
 import { EmbedBuilder, SlashCommandBuilder, Client, Collection } from 'discord.js';
 import { REST } from '@discordjs/rest';
-import { Routes } from 'discord-api-types/v10';
+import { PermissionFlagsBits, Routes } from 'discord-api-types/v10';
 import { Config } from './config';
 import { readdirSync } from 'fs';
 import { xbls } from '../Client';
@@ -23,6 +23,34 @@ export class Util extends null {
 			new SlashCommandBuilder()
 				.setName('xblstatus')
 				.setDescription('Get the status of LIVE for the Xbox 360.')
+				.toJSON(),
+			new SlashCommandBuilder()
+				.setName('settings')
+				.setDescription('xblStatus server settings.')
+				.setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+				.setDMPermission(false)
+				.addSubcommand(option => option
+					.setName('get')
+					.setDescription('Display your guild settings.')
+				)
+				.addSubcommand(option => option
+					.setName('edit')
+					.setDescription('Edit your guild settings.')
+					.addStringOption(input => input
+						.setName('setting')
+						.setDescription('Select the setting you want to edit.')
+						.addChoices(
+							{ name: 'xblStatus change webhook', value: 'webhook' },
+							{ name: 'xblStatus change emoji type', value: 'emoji' }
+						)
+						.setRequired(true)
+					)
+					.addStringOption(input => input
+						.setName('value')
+						.setDescription('Set the value of your selected setting.')
+						.setRequired(true)
+					)
+				)
 				.toJSON()
 		];
 		const token = Config.DEV_MODE ? Config.DEV_TOKEN : Config.PRODUCTION_TOKEN;
@@ -32,7 +60,7 @@ export class Util extends null {
 		});
 		console.log('Interaction Commands Set');
 	};
-	
+
 	public static loadInteractions = async (commandCollection: Collection<string, any>, buttonCollection: Collection<string, any>) => {
 		const interactionDir = `${__dirname}/../Interactions`;
 		const interactionTypes = readdirSync(interactionDir);
