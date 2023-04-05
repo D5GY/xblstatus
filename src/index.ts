@@ -92,6 +92,9 @@ client.on(Events.GuildDelete, async guild => {
 			footer: { text: `Guild Count: ${client.guilds.cache.size} | Guild Mem Count: ${guild.memberCount}` }
 		}]
 	});
+	const isGuildInDatabase: any = await client.database.query('SELECT * FROM settings WHERE guildID = ?', guild.id);
+	if (!isGuildInDatabase.length) return;
+	else client.database.query('DELETE FROM settings WHERE guildID = ?', guild.id);
 });
 
 client.on('error', (error) => {
