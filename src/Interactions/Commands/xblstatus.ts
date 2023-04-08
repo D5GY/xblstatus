@@ -21,7 +21,7 @@ module.exports = {
 			await interaction.editReply({
 				embeds: [
 					client.utils.defaultEmbed(client, client.Colors.YELLOW)
-						.setDescription('XBLStatus WebSocket Erroed, this has been logged in will be looked into!')
+						.setDescription('XBLStatus WebSocket Errored, this has been logged and will be looked into!')
 				],
 				components: [LAST_STATUS_BUTTON]
 			});
