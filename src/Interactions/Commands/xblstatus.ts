@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, Snowflake } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction } from 'discord.js';
 import xbls from '../../Client';
 import { SQLsettingsData } from '../../Utils/types';
 
