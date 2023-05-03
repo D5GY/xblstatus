@@ -75,7 +75,7 @@ export function connectWS(client: xbls) {
 					});
 				});
 			}
+			firstLaunch = false;
 		}
-		firstLaunch = false;
 	});
 }
