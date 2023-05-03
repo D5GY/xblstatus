@@ -14,9 +14,19 @@ export enum defaultEmojis {
 	BLACK = ':black_circle:',
 	WHITE = ':white_circle:'
 }
+export enum customEmojis {
+  GREEN = '<:xbls_0c0:1054479964549959791>',
+	GOLD = '<:xbls_c80:1054479962117263441>',
+	YELLOW = '<:xbls_cc0:1054479963761410108>',
+	ORANGE = '<:xbls_c50:1054479961362284554>',
+	RED = '<:xbls_c00:1054479965728555009>',
+	BLACK = '<:xbls_000:1054485544391950486>',
+	GRAY = '<:xbls_ccc:1071244643313913906>'
+}
 export interface SQLsettingsData {
   guildID: Snowflake;
   webhookURL: string;
+  emoji: string;
 }
 export interface WebSocketArrayData {
   name: string;
