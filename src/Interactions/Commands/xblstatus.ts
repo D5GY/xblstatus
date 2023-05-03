@@ -15,7 +15,6 @@ const LAST_STATUS_BUTTON = new ActionRowBuilder<ButtonBuilder>().addComponents(
 module.exports = {
 	name: 'xblstatus',
 	async execute(interaction: ChatInputCommandInteraction, client: xbls) {
-		console.log('ddod');
 		await interaction.deferReply({ ephemeral: false });
 		const secsAgo: number = (Math.floor(Math.round(Date.now() / 1000 - xbls.lastSocketUpdate / 1000)));
 
