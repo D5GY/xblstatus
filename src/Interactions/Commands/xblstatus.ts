@@ -1,5 +1,6 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction } from 'discord.js';
-import { xbls } from '../../Client';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, Snowflake } from 'discord.js';
+import xbls from '../../Client';
+import { SQLsettingsData } from '../../Utils/types';
 
 const LAST_STATUS_BUTTON = new ActionRowBuilder<ButtonBuilder>().addComponents(
 	[
@@ -14,13 +15,14 @@ const LAST_STATUS_BUTTON = new ActionRowBuilder<ButtonBuilder>().addComponents(
 module.exports = {
 	name: 'xblstatus',
 	async execute(interaction: ChatInputCommandInteraction, client: xbls) {
+		console.log('ddod');
 		await interaction.deferReply({ ephemeral: false });
-		const secsAgo: number = (Math.floor(Math.round(Date.now() / 1000 - client.lastSocketUpdate / 1000)));
+		const secsAgo: number = (Math.floor(Math.round(Date.now() / 1000 - xbls.lastSocketUpdate / 1000)));
 
-		if (client.statusSocketErrored) {
+		if (xbls.statusSocketErrored) {
 			await interaction.editReply({
 				embeds: [
-					client.utils.defaultEmbed(client, client.Colors.YELLOW)
+					xbls.utils.defaultEmbed(client, xbls.Colors.YELLOW)
 						.setDescription('XBLStatus WebSocket Errored, this has been logged and will be looked into!')
 				],
 				components: [LAST_STATUS_BUTTON]
@@ -31,7 +33,7 @@ module.exports = {
 		if (secsAgo > 300) {
 			await interaction.editReply({
 				embeds: [
-					client.utils.defaultEmbed(client, client.Colors.YELLOW)
+					xbls.utils.defaultEmbed(client, xbls.Colors.YELLOW)
 						.setDescription('Sorry, unable to gather accurate data from xblstatus.com')
 				],
 				components: [LAST_STATUS_BUTTON]
@@ -39,11 +41,18 @@ module.exports = {
 			return;
 		}
 
+		let type: string = 'default';
+		if (interaction.guild) {
+			const data = await xbls.database.query('SELECT emoji FROM settings WHERE guildID = ?', interaction.guildId) as [SQLsettingsData];
+			if (!data.length) type = 'default';
+			else type = data[0].emoji;
+		}
+
 		await interaction.editReply({
 			embeds: [
-				client.utils.defaultEmbed(client, client.Colors.BLUE)
-					.setTitle(client.utils.titleMessage(secsAgo))
-					.setDescription(client.currentStatus.map(data => `${client.utils.getEmoji(data.color)}  ${data.name} - ${data.description}`).join('\n'))
+				xbls.utils.defaultEmbed(client, xbls.Colors.BLUE)
+					.setTitle(xbls.utils.titleMessage(secsAgo))
+					.setDescription(xbls.currentStatus.map(data => `${xbls.utils.getEmoji(data.color, type)}  ${data.name} - ${data.description}`).join('\n'))
 			]
 		});
 	}

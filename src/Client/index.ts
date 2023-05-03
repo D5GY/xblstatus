@@ -1,42 +1,28 @@
 import { Client, Collection, WebhookClient } from 'discord.js';
 import { clientConfig } from './clientOptions';
-import { ConfigTypes, WSArrayData } from '../Utils/types';
+import { WSArrayData } from '../Utils/types';
 import { Config } from '../Utils/config';
 import { Colors } from '../Utils/enums';
 import { Util } from '../Utils';
 import { Database } from '../Utils/database';
 
-export class xbls extends Client {
-	config: ConfigTypes;
-	Colors: typeof Colors;
-	commands = new Collection<string, unknown>();
-	buttons = new Collection<string, unknown>();
-	utils: typeof Util;
-	socketRetryInterval: null | NodeJS.Timeout;
-	lastSocketUpdate: number;
-	statusSocketErrored: boolean;
-	currentStatus: Array<WSArrayData>;
-	oldStatus: Array<WSArrayData>;
-	database: typeof Database;
-	error: WebhookClient;
-
+export default class xbls extends Client {
+	public static config = Config;
+	public static Colors = Colors;
+	public static commands = new Collection<string, unknown>();
+	public static buttons = new Collection<string, unknown>();
+	public static utils = Util;
+	public static socketRetryInterval: null | NodeJS.Timeout = null;
+	public static lastSocketUpdate: number = NaN;
+	public static statusSocketErrored: boolean = false;
+	public static currentStatus: Array<WSArrayData> = [];
+	public static oldStatus: Array<WSArrayData> = [];
+	public static database: Database = new Database();
+	public static error = new WebhookClient({ url: this.config.WEBHOOKS.ERROR });
 	constructor() {
 		super(clientConfig);
-	
-		this.config = Config;
-		this.Colors = Colors;
-		this.commands;
-		this.buttons;
-		this.utils = Util;
-		this.socketRetryInterval = null;
-		this.lastSocketUpdate = NaN;
-		this.statusSocketErrored = false;
-		this.currentStatus = [];
-		this.oldStatus = [];
-		this.database = Database;
-		this.error = new WebhookClient({ url: this.config.WEBHOOKS.ERROR });
 	}
 	start(): void {
-		super.login(this.config.DEV_MODE ? this.config.DEV_TOKEN : this.config.PRODUCTION_TOKEN);
+		super.login(xbls.config.DEV_MODE ? xbls.config.DEV_TOKEN : xbls.config.PRODUCTION_TOKEN);
 	}
 }

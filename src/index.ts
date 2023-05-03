@@ -1,25 +1,25 @@
-import { xbls } from './Client';
+import xbls from './Client';
 import { Events, WebhookClient } from 'discord.js';
 import { InteractionType } from 'discord-api-types/v10';
 import { connectWS } from './Utils/WS Client';
+import { SQLsettingsData } from './Utils/types';
 const client = new xbls();
 client.start();
-
 client.on(Events.ClientReady, async () => {
 	console.log(`${client.user!.tag} is online`);
-	await client.utils.deployCommands().catch(error => console.error(error));
-	await client.utils.loadInteractions(client.commands, client.buttons).catch(error => console.error(error));
+	await xbls.utils.deployCommands().catch(error => console.error(error));
+	await xbls.utils.loadInteractions(xbls.commands, xbls.buttons).catch(error => console.error(error)).then(() => console.log('Loaded Interactions'));
 	connectWS(client);
-	await client.database.connect()?.catch(error => console.error(error));
+	await xbls.database.connect().catch((error: Error) => console.error(error)).then(() => console.log('Connected To Database'));
 });
 
 client.on(Events.InteractionCreate, async interaction => {
 	if (interaction.type === InteractionType.ApplicationCommand) {
-		const interactionExecuted = await client.commands.get(interaction.commandName) as any;
+		const interactionExecuted = await xbls.commands.get(interaction.commandName) as any;
 		if (!interactionExecuted) {
 			await interaction.reply({
 				embeds: [
-					client.utils.defaultEmbed(client, client.Colors.RED)
+					xbls.utils.defaultEmbed(client, xbls.Colors.RED)
 						.setDescription('An unknown error occurred, this has been logged and will be looked into.')
 				]
 			});
@@ -31,17 +31,17 @@ client.on(Events.InteractionCreate, async interaction => {
 			console.error(error);
 			interaction.channel?.send({
 				embeds: [
-					client.utils.defaultEmbed(client, client.Colors.RED)
+					xbls.utils.defaultEmbed(client, xbls.Colors.RED)
 						.setDescription('An unknown error occurred, this has been logged and will be looked into')
 				]
 			});
 		}
 	} else if (interaction.isButton()) {
-		const button: any = client.buttons.get(interaction.customId);
+		const button: any = xbls.buttons.get(interaction.customId);
 		if (!button) {
 			await interaction.reply({
 				embeds: [
-					client.utils.defaultEmbed(client, client.Colors.RED)
+					xbls.utils.defaultEmbed(client, xbls.Colors.RED)
 						.setDescription('An unknown error occurred, this has been logged and will be looked into.')
 				]
 			});
@@ -53,7 +53,7 @@ client.on(Events.InteractionCreate, async interaction => {
 			console.error(error);
 			interaction.channel?.send({
 				embeds: [
-					client.utils.defaultEmbed(client, client.Colors.RED)
+					xbls.utils.defaultEmbed(client, xbls.Colors.RED)
 						.setDescription('An unknown error occurred, this has been logged and will be looked into')
 				]
 			});
@@ -61,12 +61,12 @@ client.on(Events.InteractionCreate, async interaction => {
 	}
 });
 
-const GUILD_JOIN_WEBHOOK = new WebhookClient({ url: client.config.WEBHOOKS.GUILD_JOIN });
+const GUILD_JOIN_WEBHOOK = new WebhookClient({ url: xbls.config.WEBHOOKS.GUILD_JOIN });
 client.on(Events.GuildCreate, async guild => {
 	const guildOwner = await guild.fetchOwner();
 	GUILD_JOIN_WEBHOOK.send({
 		embeds: [{
-			color: client.Colors.BLUE,
+			color: xbls.Colors.BLUE,
 			description: 'New Guild Joined',
 			fields: [
 				{ name: 'Guild Name / ID', value: `${guild.name}\n${guild.id}`, inline: true },
@@ -77,12 +77,12 @@ client.on(Events.GuildCreate, async guild => {
 		}]
 	});
 });
-const GUILD_LEAVE_WEBHOOK = new WebhookClient({ url: client.config.WEBHOOKS.GUILD_LEAVE });
+const GUILD_LEAVE_WEBHOOK = new WebhookClient({ url: xbls.config.WEBHOOKS.GUILD_LEAVE });
 client.on(Events.GuildDelete, async guild => {
 	const guildOwner = await guild.fetchOwner();
 	GUILD_LEAVE_WEBHOOK.send({
 		embeds: [{
-			color: client.Colors.BLUE,
+			color: xbls.Colors.BLUE,
 			description: 'Guild Left',
 			fields: [
 				{ name: 'Guild Name / ID', value: `${guild.name}\n${guild.id}`, inline: true },
@@ -92,17 +92,17 @@ client.on(Events.GuildDelete, async guild => {
 			footer: { text: `Guild Count: ${client.guilds.cache.size} | Guild Mem Count: ${guild.memberCount}` }
 		}]
 	});
-	const isGuildInDatabase: any = await client.database.query('SELECT * FROM settings WHERE guildID = ?', guild.id);
+	const isGuildInDatabase = await xbls.database.query('SELECT * FROM settings WHERE guildID = ?', guild.id) as [SQLsettingsData];
 	if (!isGuildInDatabase.length) return;
-	else client.database.query('DELETE FROM settings WHERE guildID = ?', guild.id);
+	else xbls.database.query('DELETE FROM settings WHERE guildID = ?', guild.id);
 });
 
 client.on('error', (error) => {
 	console.error(error);
-	client.error.send({
+	xbls.error.send({
 		content: '<@1004109994888798218>',
 		embeds: [
-			client.utils.defaultEmbed(client, client.Colors.RED)
+			xbls.utils.defaultEmbed(client, xbls.Colors.RED)
 				.setTitle('uncaughtException')
 				.setFields(
 					{ name: 'Error Name', value: error.name, inline: true },
@@ -116,10 +116,10 @@ client.on('error', (error) => {
 });
 client.on('warn', (message) => {
 	console.log(message);
-	client.error.send({
+	xbls.error.send({
 		content: '<@1004109994888798218>',
 		embeds: [
-			client.utils.defaultEmbed(client, client.Colors.RED)
+			xbls.utils.defaultEmbed(client, xbls.Colors.RED)
 				.setTitle('Client Warning')
 				.setFields(
 					{ name: 'Warn Message', value: message },
@@ -131,10 +131,10 @@ client.on('warn', (message) => {
 });
 process.on('uncaughtException', (error) => {
 	console.error(error);
-	client.error.send({
+	xbls.error.send({
 		content: '<@1004109994888798218>',
 		embeds: [
-			client.utils.defaultEmbed(client, client.Colors.RED)
+			xbls.utils.defaultEmbed(client, xbls.Colors.RED)
 				.setTitle('uncaughtException')
 				.setFields(
 					{ name: 'Error Name', value: error.name, inline: true },
@@ -148,10 +148,10 @@ process.on('uncaughtException', (error) => {
 });
 process.on('warning', (error) => {
 	console.error(error);
-	client.error.send({
+	xbls.error.send({
 		content: '<@1004109994888798218>',
 		embeds: [
-			client.utils.defaultEmbed(client, client.Colors.YELLOW)
+			xbls.utils.defaultEmbed(client, xbls.Colors.YELLOW)
 				.setTitle('Process Warning')
 				.setFields(
 					{ name: 'Error Name', value: error.name, inline: true },

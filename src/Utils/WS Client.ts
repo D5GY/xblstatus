@@ -1,6 +1,6 @@
-import { xbls } from '../Client';
+import xbls from '../Client';
 import * as websocket from 'ws';
-import { SQLsettingsData } from './enums';
+import { SQLsettingsData } from './types';
 import { AES, enc } from 'crypto-js';
 let statusWS: undefined | websocket = undefined;
 let socketKeepAlive: null | NodeJS.Timeout = null;
@@ -8,14 +8,14 @@ let socketKeepAlive: null | NodeJS.Timeout = null;
 export function connectWS(client: xbls) {
 	if (statusWS != undefined && (statusWS.readyState === statusWS.OPEN || statusWS.readyState === statusWS.CONNECTING)) return;
 
-	statusWS = new websocket(client.config.WS.URL, undefined, {
+	statusWS = new websocket(xbls.config.WS.URL, undefined, {
 		headers: {
-			['Auth']: client.config.WS.AUTH_KEY
+			['Auth']: xbls.config.WS.AUTH_KEY
 		}
 	});
 
 	statusWS.on('open', () => {
-		client.statusSocketErrored = false;
+		xbls.statusSocketErrored = false;
 		console.log('SOCKET: Connected');
 		if (socketKeepAlive === null) {
 			socketKeepAlive = setInterval(() => {
@@ -30,22 +30,22 @@ export function connectWS(client: xbls) {
 			}, 1.8e+6);
 			console.log('SOCKET: 30mins socket reconnect started');
 		}
-		if (client.socketRetryInterval !== null) {
-			clearInterval(client.socketRetryInterval);
-			client.socketRetryInterval = null;
+		if (xbls.socketRetryInterval !== null) {
+			clearInterval(xbls.socketRetryInterval);
+			xbls.socketRetryInterval = null;
 			console.log('SOCKET: Cleared socket retry interval');
 		}
 	});
 
 	statusWS.on('error', (error: Error) => {
-		client.statusSocketErrored = true;
+		xbls.statusSocketErrored = true;
 		console.error(error);
 	});
 
 	statusWS.on('close', () => {
 		console.log('SOCKET: Closed');
-		if (client.socketRetryInterval === null) {
-			client.socketRetryInterval = setInterval(() => {
+		if (xbls.socketRetryInterval === null) {
+			xbls.socketRetryInterval = setInterval(() => {
 				connectWS(client);
 			}, 60 * 1000);
 			console.log('SOCKET: Retry Interval Started');
@@ -55,22 +55,22 @@ export function connectWS(client: xbls) {
 	statusWS.on('message', async (data: websocket.RawData) => {
 		const response = JSON.parse(Buffer.from(data.toString()).toString('utf8'));
 		if (response.message_type === 'xbl_status') {
-			client.oldStatus = client.currentStatus;
-			client.currentStatus = [];
-			client.lastSocketUpdate = Date.now();
+			xbls.oldStatus = xbls.currentStatus;
+			xbls.currentStatus = [];
+			xbls.lastSocketUpdate = Date.now();
 			for (let i = 0; i < response.services.length; i++) {
-				client.currentStatus.push(response.services[i]);
+				xbls.currentStatus.push(response.services[i]);
 			}
-			if (JSON.stringify(client.oldStatus) !== JSON.stringify(client.currentStatus)) {
-				if (client.config.DEV_MODE) return;
-				const data: any = await client.database.query('SELECT * FROM settings');
+			if (JSON.stringify(xbls.oldStatus) !== JSON.stringify(xbls.currentStatus)) {
+				if (xbls.config.DEV_MODE) return;
+				const data: any = await xbls.database.query('SELECT * FROM settings');
 				if (!data) return;
 				data.map((i: SQLsettingsData) => {
-					client.utils.postStatusWebhookChange(AES.decrypt(i.webhookURL, client.config.CIPHER_KEY).toString(enc.Utf8), {
-						color: client.Colors.BLUE,
+					xbls.utils.postStatusWebhookChange(AES.decrypt(i.webhookURL, xbls.config.CIPHER_KEY).toString(enc.Utf8), {
+						color: xbls.Colors.BLUE,
 						author: { name: 'xblstatus.com', url: 'https://xblstatus.com', icon_url: client.user!.displayAvatarURL()! },
-						title: `Detected status change at time <t:${Math.floor(client.lastSocketUpdate / 1000)}:f>`,
-						description: client.currentStatus.map(data => `${client.utils.getEmoji(data.color)}  ${data.name} - ${data.description}`).join('\n')
+						title: `Detected status change at time <t:${Math.floor(xbls.lastSocketUpdate / 1000)}:f>`,
+						description: xbls.currentStatus.map(data => `${xbls.utils.getEmoji(data.color)}  ${data.name} - ${data.description}`).join('\n')
 					});
 				});
 			}

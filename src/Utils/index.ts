@@ -3,11 +3,11 @@ import { REST } from '@discordjs/rest';
 import { PermissionFlagsBits, Routes } from 'discord-api-types/v10';
 import { Config } from './config';
 import { readdirSync } from 'fs';
-import { xbls } from '../Client';
-import { defaultEmojis } from './enums';
+import xbls from '../Client';
+import { customEmojis, defaultEmojis } from './enums';
 import fetch from 'node-fetch';
 
-export class Util extends null {
+export class Util {
 	public static client: Client;
 	public static XBLS_URL = 'https://xblstatus.com/' as const;
 
@@ -79,10 +79,14 @@ export class Util extends null {
 				}
 			}
 		}
-		console.log('Loaded Interactions');
 	};
 
-	public static getEmoji = (color: string) => {
+	public static getEmoji = (color: string, type: string = 'default') => {
+		if (type === 'default') return this.getDefaultEmoji(color);
+		else if (type === 'custom') return this.getCustomEmoji(color);
+		else return this.getDefaultEmoji(color);
+	};
+	private static getDefaultEmoji = (color: string) => {
 		if (color == '#0c0') return defaultEmojis.GREEN;
 		else if (color == '#c80') return defaultEmojis.ORANGE;
 		else if (color == '#cc0') return defaultEmojis.YELLOW;
@@ -90,6 +94,15 @@ export class Util extends null {
 		else if (color == '#c00') return defaultEmojis.RED;
 		else if (color == '#ccc') return defaultEmojis.WHITE;
 		else return defaultEmojis.BLACK;
+	};
+	private static getCustomEmoji = (color: string) => {
+		if (color == '#0c0') return customEmojis.GREEN;
+		else if (color == '#c80') return customEmojis.ORANGE;
+		else if (color == '#cc0') return customEmojis.YELLOW;
+		else if (color == '#c50') return customEmojis.ORANGE;
+		else if (color == '#c00') return customEmojis.RED;
+		else if (color == '#ccc') return customEmojis.GRAY;
+		else return customEmojis.BLACK;
 	};
 
 	public static postStatusWebhookChange = (url: string, json = {}) => {
@@ -105,5 +118,4 @@ export class Util extends null {
 			throw error;
 		});
 	};
-
 }

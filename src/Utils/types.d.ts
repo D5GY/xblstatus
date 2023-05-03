@@ -21,9 +21,20 @@ export interface ConfigTypes {
 		ERROR: string;
 	};
 	CIPHER_KEY: string;
+	DISCORD_WEBHOOK_REGEX: RegExp;
 }
 export interface WSArrayData {
 	name: string;
 	description: string;
 	color: string;
+}
+export interface SQLsettingsData {
+  guildID: Snowflake;
+  webhookURL: string;
+  emoji: string;
+}
+export interface WebSocketArrayData {
+  name: string;
+  description: string;
+  color: string;
 }
