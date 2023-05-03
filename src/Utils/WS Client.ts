@@ -4,6 +4,7 @@ import { SQLsettingsData } from './types';
 import { AES, enc } from 'crypto-js';
 let statusWS: undefined | websocket = undefined;
 let socketKeepAlive: null | NodeJS.Timeout = null;
+let firstLaunch: boolean = true;
 
 export function connectWS(client: xbls) {
 	if (statusWS != undefined && (statusWS.readyState === statusWS.OPEN || statusWS.readyState === statusWS.CONNECTING)) return;
@@ -62,7 +63,7 @@ export function connectWS(client: xbls) {
 				xbls.currentStatus.push(response.services[i]);
 			}
 			if (JSON.stringify(xbls.oldStatus) !== JSON.stringify(xbls.currentStatus)) {
-				if (xbls.config.DEV_MODE) return;
+				if (xbls.config.DEV_MODE || firstLaunch) return;
 				const data: any = await xbls.database.query('SELECT * FROM settings');
 				if (!data) return;
 				data.map((i: SQLsettingsData) => {
@@ -75,5 +76,6 @@ export function connectWS(client: xbls) {
 				});
 			}
 		}
+		firstLaunch = false;
 	});
 }
