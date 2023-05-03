@@ -31,7 +31,7 @@ module.exports = {
 			const setting = interaction.options.getString('setting', true);
 			const value = interaction.options.getString('value', true);
 
-			if (setting === 'webhook' && xbls.config.DISCORD_WEBHOOK_REGEX.test(value)) return await interaction.editReply({
+			if (setting === 'webhook' && !xbls.config.DISCORD_WEBHOOK_REGEX.test(value)) return await interaction.editReply({
 				embeds: [
 					xbls.utils.defaultEmbed(client, xbls.Colors.RED)
 						.setDescription('Invalid value, your webhook should look something like: `https://(canary.)discord.com/api/webhooks/0-9/a-zA-Z0-9`\nIf you think this is an error please contact `Jinx.#0001`')
