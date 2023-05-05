@@ -42,9 +42,22 @@ module.exports = {
 
 		let type: string = 'default';
 		if (interaction.guild) {
-			const data = await xbls.database.query('SELECT emoji FROM settings WHERE guildID = ?', interaction.guildId) as [SQLsettingsData];
-			if (!data.length) type = 'default';
-			else type = data[0].emoji;
+			try {
+				const data = await xbls.database.query('SELECT emoji FROM settings WHERE guildID = ?', interaction.guildId) as [SQLsettingsData];
+				if (!data.length) type = 'default';
+				else type = data[0].emoji;
+			} catch (error) {
+				type = 'default';
+				console.error(error);
+				xbls.error.send({
+					content: '<@1004109994888798218>',
+					embeds: [
+						xbls.utils.defaultEmbed(client, xbls.Colors.RED)
+							.setTitle('/xblstatus command error')
+							.setDescription(`Error: ${error}`)
+					]
+				});
+			}
 		}
 
 		await interaction.editReply({
