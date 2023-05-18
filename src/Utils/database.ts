@@ -9,8 +9,7 @@ export class Database {
 			host: Config.DATABASE.HOST,
 			user: Config.DATABASE.USER,
 			password: Config.DATABASE.PASSWORD,
-			database: Config.DATABASE.DATABASE,
-			port: Config.DATABASE.PORT
+			database: Config.DATABASE.DATABASE
 		});
 	}
 

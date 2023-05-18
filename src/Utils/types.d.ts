@@ -11,7 +11,6 @@ export interface ConfigTypes {
 		HOST: string;
 		USER: string;
 		PASSWORD: string;
-		PORT: number;
 		DATABASE: string;
 	};
 	WEBHOOKS: {
