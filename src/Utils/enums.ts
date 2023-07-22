@@ -5,12 +5,13 @@ export enum Colors {
   RED = 0xcc0000
 }
 export enum defaultEmojis {
-  GREEN = ':green_circle:',
-	YELLOW = ':yellow_circle:',
-	ORANGE = ':orange_circle:',
-	RED = ':red_circle:',
-	BLACK = ':black_circle:',
-	WHITE = ':white_circle:'
+  GREEN = '<:xbls_default_0c0:1132446151350681680>',
+	GOLD = '<:xbls_default_c80:1132446158325821511>',
+	YELLOW = '<:xbls_default_cc0:1132446160796274718>',
+	ORANGE = '<:xbls_default_c50:1132446155893129327>',
+	RED = '<:xbls_default_c00:1132446153825341570>',
+	BLACK = '<:xbls_default_000:1132446149006078023>',
+	WHITE = '<:xbls_default_ccc:1132446161874190409>'
 }
 export enum customEmojis {
   GREEN = '<:xbls_0c0:1054479964549959791>',

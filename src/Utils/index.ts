@@ -88,7 +88,7 @@ export class Util {
 	};
 	private static getDefaultEmoji = (color: string) => {
 		if (color == '#0c0') return defaultEmojis.GREEN;
-		else if (color == '#c80') return defaultEmojis.ORANGE;
+		else if (color == '#c80') return defaultEmojis.GOLD;
 		else if (color == '#cc0') return defaultEmojis.YELLOW;
 		else if (color == '#c50') return defaultEmojis.ORANGE;
 		else if (color == '#c00') return defaultEmojis.RED;
@@ -97,7 +97,7 @@ export class Util {
 	};
 	private static getCustomEmoji = (color: string) => {
 		if (color == '#0c0') return customEmojis.GREEN;
-		else if (color == '#c80') return customEmojis.ORANGE;
+		else if (color == '#c80') return customEmojis.GOLD;
 		else if (color == '#cc0') return customEmojis.YELLOW;
 		else if (color == '#c50') return customEmojis.ORANGE;
 		else if (color == '#c00') return customEmojis.RED;
