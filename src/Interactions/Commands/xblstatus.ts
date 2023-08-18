@@ -55,7 +55,8 @@ module.exports = {
 						xbls.utils.defaultEmbed(client, xbls.Colors.RED)
 							.setTitle('/xblstatus command error')
 							.setDescription(`Error: ${error}`)
-					]
+					],
+					components: [LAST_STATUS_BUTTON]
 				});
 			}
 		}
