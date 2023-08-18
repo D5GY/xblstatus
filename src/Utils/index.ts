@@ -19,7 +19,7 @@ export class Util {
 	public static titleMessage = (secsAgo: number) => `Last Update: ${secsAgo} ${secsAgo === 1 ? 'second' : 'seconds'} ago`;
 
 	public static deployCommands = async () => {
-		const commands = [
+		const globalCommands = [
 			new SlashCommandBuilder()
 				.setName('xblstatus')
 				.setDescription('Get the status of LIVE for the Xbox 360.')
@@ -53,12 +53,32 @@ export class Util {
 				)
 				.toJSON()
 		];
+		const guildCommands = [
+			new SlashCommandBuilder()
+				.setName('eval')
+				.setDescription('execute code')
+				.setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+				.addStringOption(input => input
+					.setName('code')
+					.setDescription('The code you want to execute')
+					.setRequired(true)
+				)
+				.addBooleanOption(input => input
+					.setName('async')
+					.setDescription('asynchronously execute code')
+					.setRequired(false)
+				)
+				.toJSON()
+		];
 		const token = Config.DEV_MODE ? Config.DEV_TOKEN : Config.PRODUCTION_TOKEN;
 		const rest = new REST({ version: '10' }).setToken(token);
 		await rest.put(Routes.applicationCommands(Buffer.from(token.split('.')[0], 'base64').toString()), {
-			body: commands
+			body: globalCommands
 		});
-		console.log('Interaction Commands Set');
+		await rest.put(Routes.applicationGuildCommands(Buffer.from(token.split('.')[0], 'base64').toString(), Config.MAIN_GUILD), {
+			body: guildCommands
+		});
+		console.log('Interaction Global & Guild Commands Set');
 	};
 
 	public static loadInteractions = async (commandCollection: Collection<string, any>, buttonCollection: Collection<string, any>) => {

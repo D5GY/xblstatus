@@ -2,6 +2,8 @@ import { Snowflake } from 'discord.js';
 export interface ConfigTypes {
 	DEV_MODE: boolean;
 	DEV_TOKEN: Snowflake;
+	DEV_IDs: Snowflake[];
+	MAIN_GUILD: Snowflake;
 	PRODUCTION_TOKEN: Snowflake;
 	WS: {
 		URL: string;
