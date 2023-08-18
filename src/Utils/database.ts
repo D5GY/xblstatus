@@ -6,7 +6,7 @@ export class Database {
 
 	public constructor() {
 		this._database = createConnection({
-			host: Config.DATABASE.HOST,
+			host: Config.DEV_MODE ? Config.DATABASE.DEV_HOST : Config.DATABASE.HOST,
 			user: Config.DATABASE.USER,
 			password: Config.DATABASE.PASSWORD,
 			database: Config.DATABASE.DATABASE

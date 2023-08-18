@@ -9,6 +9,7 @@ export interface ConfigTypes {
 	};
 	DATABASE: {
 		HOST: string;
+		DEV_HOST: string;
 		USER: string;
 		PASSWORD: string;
 		DATABASE: string;
