@@ -108,8 +108,7 @@ export class Util {
 	};
 	private static getDefaultEmoji = (color: string) => {
 		if (color == '#0c0') return defaultEmojis.GREEN;
-		else if (color == '#c80') return defaultEmojis.GOLD;
-		else if (color == '#cc0') return defaultEmojis.YELLOW;
+		else if (color == '#cc0' || color == '#c80') return defaultEmojis.YELLOW;
 		else if (color == '#c50') return defaultEmojis.ORANGE;
 		else if (color == '#c00') return defaultEmojis.RED;
 		else if (color == '#ccc') return defaultEmojis.WHITE;
