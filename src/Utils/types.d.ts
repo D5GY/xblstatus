@@ -21,6 +21,7 @@ export interface ConfigTypes {
 		GUILD_LEAVE: string;
 		SOCKET: string;
 		ERROR: string;
+		INTERACTION_USAGE: string;
 	};
 	CIPHER_KEY: string;
 	DISCORD_WEBHOOK_REGEX: RegExp;

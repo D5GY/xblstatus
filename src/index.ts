@@ -1,5 +1,5 @@
 import xbls from './Client';
-import { Events, WebhookClient } from 'discord.js';
+import { Events, WebhookClient, userMention } from 'discord.js';
 import { InteractionType } from 'discord-api-types/v10';
 import { connectWS } from './Utils/WS Client';
 import { SQLsettingsData } from './Utils/types';
@@ -13,7 +13,19 @@ client.on(Events.ClientReady, async () => {
 	await xbls.database.connect().catch((error: Error) => console.error(error)).then(() => console.log('Connected To Database'));
 });
 
+const INTERACTION_USAGE_WEBHOOK = new WebhookClient({ url: xbls.config.WEBHOOKS.INTERACTION_USAGE });
 client.on(Events.InteractionCreate, async interaction => {
+	INTERACTION_USAGE_WEBHOOK.send({
+		embeds: [
+			xbls.utils.defaultEmbed(client, xbls.Colors.BLUE)
+				.addFields(
+					{ name: 'Type', value: interaction.type == 2 ? 'Command' : 'Button', inline: true },
+					{ name: 'Name', value: interaction.type === InteractionType.ApplicationCommand ? interaction.commandName : 'Last status', inline: true },
+					{ name: 'Executer', value: `ID: ${interaction.user.id}\nTag: ${interaction.user.tag}\nMention: ${userMention(interaction.user.id)}` },
+					{ name: 'Guild', value: interaction.guild ? `ID: ${interaction.guild.id}\nName: ${interaction.guild.name}` : 'Usaed in DM\'s' }
+				)
+		]
+	});
 	if (interaction.type === InteractionType.ApplicationCommand) {
 		const interactionExecuted = await xbls.commands.get(interaction.commandName) as any;
 		if (!interactionExecuted) {
