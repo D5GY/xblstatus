@@ -52,7 +52,7 @@ export function connectWS(client: xbls) {
 			console.log('SOCKET: Retry Interval Started');
 		}
 	});
-	
+	let changedCount = 0;
 	statusWS.on('message', async (data: websocket.RawData) => {
 		const response = JSON.parse(Buffer.from(data.toString()).toString('utf8'));
 		if (response.message_type === 'xbl_status') {
@@ -62,7 +62,8 @@ export function connectWS(client: xbls) {
 			for (let i = 0; i < response.services.length; i++) {
 				xbls.currentStatus.push(response.services[i]);
 			}
-			if (JSON.stringify(xbls.oldStatus) !== JSON.stringify(xbls.currentStatus)) {
+			if (JSON.stringify(xbls.oldStatus) !== JSON.stringify(xbls.currentStatus) && ++changedCount >= 3) {
+				changedCount = 0;
 				if (xbls.config.DEV_MODE || firstLaunch) return;
 				const data: any = await xbls.database.query('SELECT * FROM settings');
 				if (!data) return;

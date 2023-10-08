@@ -32,12 +32,12 @@ export interface WSArrayData {
 	color: string;
 }
 export interface SQLsettingsData {
-  guildID: Snowflake;
-  webhookURL: string;
-  emoji: string;
+	guildID: Snowflake;
+	webhookURL: string;
+	emoji: string;
 }
 export interface WebSocketArrayData {
-  name: string;
-  description: string;
-  color: string;
+	name: string;
+	description: string;
+	color: string;
 }
