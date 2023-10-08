@@ -2,10 +2,8 @@ import { ClientOptions, GatewayIntentBits, Partials, ActivityType } from 'discor
 
 export const clientConfig: ClientOptions = {
 	intents: [
-		GatewayIntentBits.DirectMessages, GatewayIntentBits.GuildEmojisAndStickers,
-		GatewayIntentBits.GuildEmojisAndStickers, GatewayIntentBits.GuildMembers,
-		GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildWebhooks,
-		GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent
+		GatewayIntentBits.GuildEmojisAndStickers, GatewayIntentBits.GuildWebhooks,
+		GatewayIntentBits.Guilds
 	],
 	partials: [
 		Partials.Channel, Partials.GuildMember,
