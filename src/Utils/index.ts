@@ -1,11 +1,12 @@
 import { EmbedBuilder, SlashCommandBuilder, Client, Collection } from 'discord.js';
 import { REST } from '@discordjs/rest';
 import { PermissionFlagsBits, Routes } from 'discord-api-types/v10';
-import { Config } from './config';
 import { readdirSync } from 'fs';
 import xbls from '../Client';
 import { customEmojis, defaultEmojis } from './enums';
 import fetch from 'node-fetch';
+
+const { config } = xbls;
 
 export class Util {
 	public static client: Client;
@@ -70,12 +71,12 @@ export class Util {
 				)
 				.toJSON()
 		];
-		const token = Config.DEV_MODE ? Config.DEV_TOKEN : Config.PRODUCTION_TOKEN;
+		const token = config.DEV_MODE ? config.DEV_TOKEN : config.PRODUCTION_TOKEN;
 		const rest = new REST({ version: '10' }).setToken(token);
 		await rest.put(Routes.applicationCommands(Buffer.from(token.split('.')[0], 'base64').toString()), {
 			body: globalCommands
 		});
-		await rest.put(Routes.applicationGuildCommands(Buffer.from(token.split('.')[0], 'base64').toString(), Config.MAIN_GUILD), {
+		await rest.put(Routes.applicationGuildCommands(Buffer.from(token.split('.')[0], 'base64').toString(), config.MAIN_GUILD), {
 			body: guildCommands
 		});
 		console.log('Interaction Global & Guild Commands Set');

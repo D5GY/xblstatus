@@ -1,11 +1,11 @@
 {
   "name": "xblstatus",
-  "version": "1.4.3",
+  "version": "1.4.4",
   "description": "A discord bot for bringing real time Xbox 360 status updates.",
-  "main": "index.js",
+  "main": "build/index.js",
   "scripts": {
     "build": "tsc && npm run start",
-    "start": "cd compiled && node index.js"
+    "start": "node build/index.js"
   },
   "repository": {
     "type": "git",
@@ -19,6 +19,7 @@
   "homepage": "https://github.com/D5GY/xblstatus#readme",
   "dependencies": {
     "@discordjs/rest": "^1.5.0",
+    "@types/node": "^20.8.4",
     "crypto-js": "^4.1.1",
     "discord-api-types": "^0.37.35",
     "discord.js": "^14.11.0",
