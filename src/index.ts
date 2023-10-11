@@ -3,6 +3,7 @@ import { Events, WebhookClient, userMention } from 'discord.js';
 import { InteractionType } from 'discord-api-types/v10';
 import { connectWS } from './Utils/WS Client';
 import { SQLsettingsData } from './Utils/types';
+import config from './config';
 
 const client = new xbls();
 client.start();
@@ -14,7 +15,7 @@ client.on(Events.ClientReady, async () => {
 	await xbls.database.connect().catch((error: Error) => console.error(error)).then(() => console.log('Connected To Database'));
 });
 
-const INTERACTION_USAGE_WEBHOOK = new WebhookClient({ url: xbls.config.WEBHOOKS.INTERACTION_USAGE });
+const INTERACTION_USAGE_WEBHOOK = new WebhookClient({ url: config.WEBHOOKS.INTERACTION_USAGE });
 client.on(Events.InteractionCreate, async interaction => {
 	INTERACTION_USAGE_WEBHOOK.send({
 		embeds: [
@@ -74,7 +75,7 @@ client.on(Events.InteractionCreate, async interaction => {
 	}
 });
 
-const GUILD_JOIN_WEBHOOK = new WebhookClient({ url: xbls.config.WEBHOOKS.GUILD_JOIN });
+const GUILD_JOIN_WEBHOOK = new WebhookClient({ url: config.WEBHOOKS.GUILD_JOIN });
 client.on(Events.GuildCreate, async guild => {
 	const guildOwner = await guild.fetchOwner();
 	GUILD_JOIN_WEBHOOK.send({
@@ -90,7 +91,7 @@ client.on(Events.GuildCreate, async guild => {
 		}]
 	});
 });
-const GUILD_LEAVE_WEBHOOK = new WebhookClient({ url: xbls.config.WEBHOOKS.GUILD_LEAVE });
+const GUILD_LEAVE_WEBHOOK = new WebhookClient({ url: config.WEBHOOKS.GUILD_LEAVE });
 client.on(Events.GuildDelete, async guild => {
 	const guildOwner = await guild.fetchOwner();
 	GUILD_LEAVE_WEBHOOK.send({

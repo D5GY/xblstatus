@@ -2,6 +2,7 @@ import xbls from '../Client';
 import * as websocket from 'ws';
 import { SQLsettingsData } from '../Utils/types';
 import { AES, enc } from 'crypto-js';
+import config from '../config';
 let statusWS: undefined | websocket = undefined;
 let socketKeepAlive: null | NodeJS.Timeout = null;
 let firstLaunch: boolean = true;
@@ -9,9 +10,9 @@ let firstLaunch: boolean = true;
 export function connectWS(client: xbls) {
 	if (statusWS != undefined && (statusWS.readyState === statusWS.OPEN || statusWS.readyState === statusWS.CONNECTING)) return;
 
-	statusWS = new websocket(xbls.config.WS.URL, undefined, {
+	statusWS = new websocket(config.WS.URL, undefined, {
 		headers: {
-			['Auth']: xbls.config.WS.AUTH_KEY
+			['Auth']: config.WS.AUTH_KEY
 		}
 	});
 
@@ -64,11 +65,11 @@ export function connectWS(client: xbls) {
 			}
 			if (JSON.stringify(xbls.oldStatus) !== JSON.stringify(xbls.currentStatus) && ++changedCount >= 3) {
 				changedCount = 0;
-				if (xbls.config.DEV_MODE || firstLaunch) return;
+				if (config.DEV_MODE || firstLaunch) return;
 				const data: any = await xbls.database.query('SELECT * FROM settings');
 				if (!data) return;
 				data.map((i: SQLsettingsData) => {
-					xbls.utils.postStatusWebhookChange(AES.decrypt(i.webhookURL, xbls.config.CIPHER_KEY).toString(enc.Utf8), {
+					xbls.utils.postStatusWebhookChange(AES.decrypt(i.webhookURL, config.CIPHER_KEY).toString(enc.Utf8), {
 						color: xbls.Colors.BLUE,
 						author: { name: 'xblstatus.com', url: 'https://xblstatus.com', icon_url: client.user!.displayAvatarURL()! },
 						title: `Detected status change at time <t:${Math.floor(xbls.lastSocketUpdate / 1000)}:f>`,
