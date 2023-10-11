@@ -1,6 +1,6 @@
 import xbls from '../Client';
 import * as websocket from 'ws';
-import { SQLsettingsData } from './types';
+import { SQLsettingsData } from '../Utils/types';
 import { AES, enc } from 'crypto-js';
 let statusWS: undefined | websocket = undefined;
 let socketKeepAlive: null | NodeJS.Timeout = null;

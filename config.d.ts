@@ -1,5 +1,6 @@
 import { Snowflake } from 'discord.js';
-export interface ConfigTypes {
+
+export const config: {
 	DEV_MODE: boolean;
 	DEV_TOKEN: Snowflake;
 	DEV_IDs: Snowflake[];
@@ -25,19 +26,5 @@ export interface ConfigTypes {
 	};
 	CIPHER_KEY: string;
 	DISCORD_WEBHOOK_REGEX: RegExp;
-}
-export interface WSArrayData {
-	name: string;
-	description: string;
-	color: string;
-}
-export interface SQLsettingsData {
-	guildID: Snowflake;
-	webhookURL: string;
-	emoji: string;
-}
-export interface WebSocketArrayData {
-	name: string;
-	description: string;
-	color: string;
-}
+};
+

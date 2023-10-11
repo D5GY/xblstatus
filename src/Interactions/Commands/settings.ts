@@ -2,6 +2,7 @@ import { ChatInputCommandInteraction } from 'discord.js';
 import xbls from '../../Client';
 import { AES, enc } from 'crypto-js';
 import { SQLsettingsData } from '../../Utils/types';
+
 module.exports = {
 	name: 'settings',
 	async execute(interaction: ChatInputCommandInteraction, client: xbls) {
@@ -57,7 +58,7 @@ module.exports = {
 					]
 				});
 			}
-			const res: any = await xbls.database.query(`UPDATE settings SET ${setting === 'webhook' ? 'webhookURL' : 'emoji'} = ? WHERE guildID = ?`, 
+			const res: any = await xbls.database.query(`UPDATE settings SET ${setting === 'webhook' ? 'webhookURL' : 'emoji'} = ? WHERE guildID = ?`,
 				setting === 'webhook' ? AES.encrypt(value!, xbls.config.CIPHER_KEY).toString() : value!,
 				interaction.guild!.id);
 			return interaction.editReply({

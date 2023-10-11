@@ -1,15 +1,17 @@
 import { Connection, createConnection } from 'mysql2';
-import { Config } from './config';
+import xbls from '../Client';
+
+const { config } = xbls;
 
 export class Database {
 	public _database: Connection;
 
 	public constructor() {
 		this._database = createConnection({
-			host: Config.DEV_MODE ? Config.DATABASE.DEV_HOST : Config.DATABASE.HOST,
-			user: Config.DATABASE.USER,
-			password: Config.DATABASE.PASSWORD,
-			database: Config.DATABASE.DATABASE
+			host: config.DEV_MODE ? config.DATABASE.DEV_HOST : config.DATABASE.HOST,
+			user: config.DATABASE.USER,
+			password: config.DATABASE.PASSWORD,
+			database: config.DATABASE.DATABASE
 		});
 	}
 

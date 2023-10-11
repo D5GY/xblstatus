@@ -3,6 +3,7 @@ import { Events, WebhookClient, userMention } from 'discord.js';
 import { InteractionType } from 'discord-api-types/v10';
 import { connectWS } from './Utils/WS Client';
 import { SQLsettingsData } from './Utils/types';
+
 const client = new xbls();
 client.start();
 client.on(Events.ClientReady, async () => {

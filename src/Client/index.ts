@@ -1,13 +1,12 @@
 import { Client, Collection, WebhookClient } from 'discord.js';
 import { clientConfig } from './clientOptions';
 import { WSArrayData } from '../Utils/types';
-import { Config } from '../Utils/config';
 import { Colors } from '../Utils/enums';
 import { Util } from '../Utils';
 import { Database } from '../Utils/database';
 
 export default class xbls extends Client {
-	public static config = Config;
+	public static config = require('../../config');
 	public static Colors = Colors;
 	public static commands = new Collection<string, unknown>();
 	public static buttons = new Collection<string, unknown>();
@@ -19,10 +18,12 @@ export default class xbls extends Client {
 	public static oldStatus: Array<WSArrayData> = [];
 	public static database: Database = new Database();
 	public static error = new WebhookClient({ url: this.config.WEBHOOKS.ERROR });
-	constructor() {
+
+	public constructor() {
 		super(clientConfig);
 	}
-	start(): void {
-		super.login(xbls.config.DEV_MODE ? xbls.config.DEV_TOKEN : xbls.config.PRODUCTION_TOKEN);
+
+	public start(): void {
+		this.login(xbls.config.DEV_MODE ? xbls.config.DEV_TOKEN : xbls.config.PRODUCTION_TOKEN);
 	}
 }

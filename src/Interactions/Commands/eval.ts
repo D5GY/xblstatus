@@ -1,13 +1,12 @@
 import { ChatInputCommandInteraction, codeBlock } from 'discord.js';
 import xbls from '../../Client';
 import * as util from 'util';
-import { Config } from '../../Utils/config';
 
 module.exports = {
 	name: 'eval',
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	async execute(interaction: ChatInputCommandInteraction, client: xbls) {
-		if (!Config.DEV_IDs.includes(interaction.user.id)) {
+		if (!xbls.config.DEV_IDs.includes(interaction.user.id)) {
 			return interaction.reply({
 				content: 'You do not have permission to use this command.'
 			});
@@ -18,7 +17,7 @@ module.exports = {
 			const async = interaction.options.getBoolean('async', false);
 
 			const result = util.inspect(await eval(async ? `(async()=>{${code}})();` : code))
-				.replaceAll(Config.DEV_TOKEN, 'DEV-TOKEN').replaceAll(Config.PRODUCTION_TOKEN, 'TOKEN');
+				.replaceAll(xbls.config.DEV_TOKEN, 'DEV-TOKEN').replaceAll(xbls.config.PRODUCTION_TOKEN, 'TOKEN');
 
 			if (result.length > 1500) {
 				const json = await fetch('https://hastebin.skyra.pw/documents', {
