@@ -5,8 +5,7 @@ import { readdirSync } from 'fs';
 import xbls from '../Client';
 import { customEmojis, defaultEmojis } from './enums';
 import fetch from 'node-fetch';
-
-const { config } = xbls;
+import config from '../config';
 
 export class Util {
 	public static client: Client;

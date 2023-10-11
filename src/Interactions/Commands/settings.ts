@@ -2,6 +2,7 @@ import { ChatInputCommandInteraction } from 'discord.js';
 import xbls from '../../Client';
 import { AES, enc } from 'crypto-js';
 import { SQLsettingsData } from '../../Utils/types';
+import config from '../../config';
 
 module.exports = {
 	name: 'settings',
@@ -23,7 +24,7 @@ module.exports = {
 				embeds: [
 					xbls.utils.defaultEmbed(client, xbls.Colors.BLUE)
 						.setFields([
-							{ name: 'Status Webhook URL', value: AES.decrypt(data[0].webhookURL, xbls.config.CIPHER_KEY).toString(enc.Utf8) },
+							{ name: 'Status Webhook URL', value: AES.decrypt(data[0].webhookURL, config.CIPHER_KEY).toString(enc.Utf8) },
 							{ name: 'Emoji Type', value: data[0].emoji }
 						])
 				]
@@ -32,7 +33,7 @@ module.exports = {
 			const setting = interaction.options.getString('setting', true);
 			const value = interaction.options.getString('value', true);
 
-			if (setting === 'webhook' && !xbls.config.DISCORD_WEBHOOK_REGEX.test(value)) return await interaction.editReply({
+			if (setting === 'webhook' && !config.DISCORD_WEBHOOK_REGEX.test(value)) return await interaction.editReply({
 				embeds: [
 					xbls.utils.defaultEmbed(client, xbls.Colors.RED)
 						.setDescription('Invalid value, your webhook should look something like: `https://(canary.)discord.com/api/webhooks/0-9/a-zA-Z0-9`\nIf you think this is an error please contact `Jinx.#0001`')
@@ -49,7 +50,7 @@ module.exports = {
 			if (!isGuildInDatabase.length) {
 				const res: any = await xbls.database.query(`INSERT INTO settings (guildID, ${setting === 'webhook' ? 'webhookURL' : 'emoji'}) VALUES (?, ?)`,
 					interaction.guild!.id,
-					setting === 'webhook' ? AES.encrypt(value!, xbls.config.CIPHER_KEY).toString() : value!);
+					setting === 'webhook' ? AES.encrypt(value!, config.CIPHER_KEY).toString() : value!);
 				return interaction.editReply({
 					embeds: [
 						xbls.utils.defaultEmbed(client, xbls.Colors.GREEN)
@@ -59,7 +60,7 @@ module.exports = {
 				});
 			}
 			const res: any = await xbls.database.query(`UPDATE settings SET ${setting === 'webhook' ? 'webhookURL' : 'emoji'} = ? WHERE guildID = ?`,
-				setting === 'webhook' ? AES.encrypt(value!, xbls.config.CIPHER_KEY).toString() : value!,
+				setting === 'webhook' ? AES.encrypt(value!, config.CIPHER_KEY).toString() : value!,
 				interaction.guild!.id);
 			return interaction.editReply({
 				embeds: [

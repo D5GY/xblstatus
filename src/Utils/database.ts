@@ -1,7 +1,5 @@
 import { Connection, createConnection } from 'mysql2';
-import xbls from '../Client';
-
-const { config } = xbls;
+import config from '../config';
 
 export class Database {
 	public _database: Connection;

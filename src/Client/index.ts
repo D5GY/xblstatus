@@ -4,9 +4,10 @@ import { WSArrayData } from '../Utils/types';
 import { Colors } from '../Utils/enums';
 import { Util } from '../Utils';
 import { Database } from '../Utils/database';
+import config from '../config';
 
 export default class xbls extends Client {
-	public static config = require('../../config');
+	public static config = config;
 	public static Colors = Colors;
 	public static commands = new Collection<string, unknown>();
 	public static buttons = new Collection<string, unknown>();
@@ -24,6 +25,6 @@ export default class xbls extends Client {
 	}
 
 	public start(): void {
-		this.login(xbls.config.DEV_MODE ? xbls.config.DEV_TOKEN : xbls.config.PRODUCTION_TOKEN);
+		this.login(config.DEV_MODE ? config.DEV_TOKEN : config.PRODUCTION_TOKEN);
 	}
 }
