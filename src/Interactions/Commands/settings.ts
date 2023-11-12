@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction } from 'discord.js';
+import { ChatInputCommandInteraction, hyperlink } from 'discord.js';
 import xbls from '../../Client';
 import { AES, enc } from 'crypto-js';
 import { SQLsettingsData } from '../../Utils/types';
@@ -51,6 +51,12 @@ module.exports = {
 				const res: any = await xbls.database.query(`INSERT INTO settings (guildID, ${setting === 'webhook' ? 'webhookURL' : 'emoji'}) VALUES (?, ?)`,
 					interaction.guild!.id,
 					setting === 'webhook' ? AES.encrypt(value!, config.CIPHER_KEY).toString() : value!);
+
+				if (setting === 'webhook') xbls.utils.postWebhookMessage(value,
+					xbls.utils.defaultEmbed(client, xbls.Colors.BLUE)
+						.setDescription(`Hey, ${interaction.user} has setup automatic status updates for this channel. for more support join our ${hyperlink('discord', config.MAIN_GUILD_INVITE_URL)} you can also ${hyperlink('invite me', config.BOT_INVITE_URL)} to your own server!`)
+						.toJSON()
+				);
 				return interaction.editReply({
 					embeds: [
 						xbls.utils.defaultEmbed(client, xbls.Colors.GREEN)
@@ -62,6 +68,13 @@ module.exports = {
 			const res: any = await xbls.database.query(`UPDATE settings SET ${setting === 'webhook' ? 'webhookURL' : 'emoji'} = ? WHERE guildID = ?`,
 				setting === 'webhook' ? AES.encrypt(value!, config.CIPHER_KEY).toString() : value!,
 				interaction.guild!.id);
+
+			if (setting === 'webhook') xbls.utils.postWebhookMessage(value,
+				xbls.utils.defaultEmbed(client, xbls.Colors.BLUE)
+					.setDescription(`Hey, ${interaction.user} has updated the database for automatic status updates for this channel. For more support join our ${hyperlink('discord', config.MAIN_GUILD_INVITE_URL)} you can also ${hyperlink('invite me', config.BOT_INVITE_URL)} to your own server!`)
+					.toJSON()
+			)
+
 			return interaction.editReply({
 				embeds: [
 					xbls.utils.defaultEmbed(client, xbls.Colors.GREEN)

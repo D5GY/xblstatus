@@ -137,4 +137,18 @@ export class Util {
 			throw error;
 		});
 	};
+	
+	public static postWebhookMessage = (url: string, json = {}) => {
+		fetch(url, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				embeds: [json]
+			})
+		}).catch((error) => {
+			throw error;
+		});
+	}
 }

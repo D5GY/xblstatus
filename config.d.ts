@@ -6,6 +6,8 @@ export const config: {
 	DEV_IDs: Snowflake[];
 	MAIN_GUILD: Snowflake;
 	PRODUCTION_TOKEN: Snowflake;
+	MAIN_GUILD_INVITE_URL: string;
+	BOT_INVITE_URL: string;
 	WS: {
 		URL: string;
 		AUTH_KEY: string;
