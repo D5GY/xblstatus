@@ -24,8 +24,8 @@ module.exports = {
 				embeds: [
 					xbls.utils.defaultEmbed(client, xbls.Colors.BLUE)
 						.setFields([
-							{ name: 'Status Webhook URL', value: AES.decrypt(data[0].webhookURL, config.CIPHER_KEY).toString(enc.Utf8) },
-							{ name: 'Emoji Type', value: data[0].emoji }
+							{ name: 'Status Webhook URL', value: data[0].webhookURL === null ? 'No webhook setup' : AES.decrypt(data[0].webhookURL, config.CIPHER_KEY).toString(enc.Utf8) },
+							{ name: 'Emoji Type', value: data[0].emoji === null ? 'default' : data[0].emoji }
 						])
 				]
 			});
