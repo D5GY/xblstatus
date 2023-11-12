@@ -32,6 +32,7 @@ client.on(Events.InteractionCreate, async interaction => {
 		const interactionExecuted = await xbls.commands.get(interaction.commandName) as any;
 		if (!interactionExecuted) {
 			await interaction.reply({
+				ephemeral: true,
 				embeds: [
 					xbls.utils.defaultEmbed(client, xbls.Colors.RED)
 						.setDescription('An unknown error occurred, this has been logged and will be looked into.')
@@ -54,6 +55,7 @@ client.on(Events.InteractionCreate, async interaction => {
 		const button: any = xbls.buttons.get(interaction.customId);
 		if (!button) {
 			await interaction.reply({
+				ephemeral: true,
 				embeds: [
 					xbls.utils.defaultEmbed(client, xbls.Colors.RED)
 						.setDescription('An unknown error occurred, this has been logged and will be looked into.')
