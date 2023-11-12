@@ -1,6 +1,7 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, hyperlink } from 'discord.js';
 import xbls from '../../Client';
 import { SQLsettingsData } from '../../Utils/types';
+import config from '../../config';
 
 const LAST_STATUS_BUTTON = new ActionRowBuilder<ButtonBuilder>().addComponents(
 	[
@@ -22,7 +23,7 @@ module.exports = {
 			await interaction.editReply({
 				embeds: [
 					xbls.utils.defaultEmbed(client, xbls.Colors.YELLOW)
-						.setDescription('XBLStatus WebSocket Errored, this has been logged and will be looked into!')
+						.setDescription(`XBLStatus WebSocket Errored, join our ${hyperlink('support discord', config.MAIN_GUILD_INVITE_URL)} and report it!`)
 				],
 				components: [LAST_STATUS_BUTTON]
 			});

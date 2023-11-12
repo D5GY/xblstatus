@@ -1,5 +1,5 @@
 import xbls from './Client';
-import { Events, WebhookClient, userMention } from 'discord.js';
+import { Events, WebhookClient, hyperlink, userMention } from 'discord.js';
 import { InteractionType } from 'discord-api-types/v10';
 import { connectWS } from './Utils/WS Client';
 import { SQLsettingsData } from './Utils/types';
@@ -35,7 +35,7 @@ client.on(Events.InteractionCreate, async interaction => {
 				ephemeral: true,
 				embeds: [
 					xbls.utils.defaultEmbed(client, xbls.Colors.RED)
-						.setDescription('An unknown error occurred, this has been logged and will be looked into.')
+						.setDescription(`An unknown error occurred, join our ${hyperlink('support discord', config.MAIN_GUILD_INVITE_URL)} and report it! [!interactionExecuted]`)
 				]
 			});
 		}
@@ -47,30 +47,30 @@ client.on(Events.InteractionCreate, async interaction => {
 			interaction.channel?.send({
 				embeds: [
 					xbls.utils.defaultEmbed(client, xbls.Colors.RED)
-						.setDescription('An unknown error occurred, this has been logged and will be looked into')
+						.setDescription(`An unknown error occurred, join our ${hyperlink('support discord', config.MAIN_GUILD_INVITE_URL)} and report it! [interactionExecuted.execute()]`)
 				]
 			});
 		}
 	} else if (interaction.isButton()) {
-		const button: any = xbls.buttons.get(interaction.customId);
-		if (!button) {
+		const buttonExecuted: any = xbls.buttons.get(interaction.customId);
+		if (!buttonExecuted) {
 			await interaction.reply({
 				ephemeral: true,
 				embeds: [
 					xbls.utils.defaultEmbed(client, xbls.Colors.RED)
-						.setDescription('An unknown error occurred, this has been logged and will be looked into.')
+						.setDescription(`An unknown error occurred, join our ${hyperlink('support discord', config.MAIN_GUILD_INVITE_URL)} and report it! [!buttonExecuted]`)
 				]
 			});
 		}
 		try {
-			await button.execute(interaction, client);
+			await buttonExecuted.execute(interaction, client);
 		} catch (error: any) {
 			if (error.name === 'DiscordAPIError[10062]') return;
 			console.error(error);
 			interaction.channel?.send({
 				embeds: [
 					xbls.utils.defaultEmbed(client, xbls.Colors.RED)
-						.setDescription('An unknown error occurred, this has been logged and will be looked into')
+						.setDescription(`An unknown error occurred, join our ${hyperlink('support discord', config.MAIN_GUILD_INVITE_URL)} and report it! [buttonExecuted.execute()]`)
 				]
 			});
 		}
