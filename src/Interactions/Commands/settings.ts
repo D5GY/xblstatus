@@ -73,7 +73,7 @@ module.exports = {
 				xbls.utils.defaultEmbed(client, xbls.Colors.BLUE)
 					.setDescription(`Hey, ${interaction.user} has updated the database for automatic status updates for this channel. For more support join our ${hyperlink('discord', config.MAIN_GUILD_INVITE_URL)} you can also ${hyperlink('invite me', config.BOT_INVITE_URL)} to your own server!`)
 					.toJSON()
-			)
+			);
 
 			return interaction.editReply({
 				embeds: [
