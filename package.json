@@ -1,6 +1,6 @@
 {
   "name": "xblstatus",
-  "version": "1.4.4",
+  "version": "1.4.5",
   "description": "A discord bot for bringing real time Xbox 360 status updates.",
   "main": "build/index.js",
   "scripts": {
@@ -29,12 +29,12 @@
     "ws": "^8.11.0"
   },
   "devDependencies": {
-    "@types/crypto-js": "^4.1.1",
+    "@types/crypto-js": "^4.2.1",
     "@types/mysql": "^2.15.21",
     "@types/node-fetch": "^2.6.2",
     "@types/ws": "^8.5.4",
-    "@typescript-eslint/eslint-plugin": "^5.50.0",
-    "@typescript-eslint/parser": "^5.50.0",
+    "@typescript-eslint/eslint-plugin": "^5.62.0",
+    "@typescript-eslint/parser": "^5.62.0",
     "eslint": "^8.33.0"
   }
 }
