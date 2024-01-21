@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction, hyperlink } from 'discord.js';
 import xbls from '../../Client';
-import { readFileSync } from 'fs';
 import config from '../../config';
+import { SQLErrorCodes } from '../../Utils/types';
 
 module.exports = {
 	name: 'xblerror',
@@ -10,8 +10,7 @@ module.exports = {
 		let code = interaction.options.getString('code', true).trim();
 		if (code.startsWith('0x')) code = code.split('0x')[1];
 
-		const Jsondata = JSON.parse(readFileSync(`${__dirname}/../../../status_codes.json`, 'utf8'));
-		const data = await Jsondata[code];
+		const [data] = await xbls.database.query('SELECT * FROM codes WHERE code = ?', code) as [SQLErrorCodes];
 
 		if (!data) return await interaction.editReply({
 			embeds: [
@@ -25,7 +24,7 @@ module.exports = {
 			embeds: [
 				xbls.utils.defaultEmbed(client, xbls.Colors.BLUE)
 					.setTitle(`Xbox Live Error Code: ${code}`)
-					.setDescription(`__Error Description:__\n${data}`)
+					.setDescription(`__Error Name:__\n${data.error}${typeof data.fix === 'string' ? `\n\n__Possible solution:__\n${data.fix}` : ''}`)
 			]
 		});
 	}

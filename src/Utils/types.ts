@@ -15,3 +15,8 @@ export interface WebSocketArrayData {
     description: string;
     color: string;
 }
+export interface SQLErrorCodes {
+    code: string;
+    error: string;
+    fix: string | null;
+}
