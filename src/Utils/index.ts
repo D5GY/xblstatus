@@ -25,6 +25,10 @@ export class Util {
 				.setDescription('Get the status of Live for the Xbox 360.')
 				.toJSON(),
 			new SlashCommandBuilder()
+				.setName('credits')
+				.setDescription('Get the list of xblstatus contributors.')
+				.toJSON(),
+			new SlashCommandBuilder()
 				.setName('xblerror')
 				.setDescription('Lookup an Xbox 360 Live error code.')
 				.addStringOption(option => option
