@@ -22,7 +22,16 @@ export class Util {
 		const globalCommands = [
 			new SlashCommandBuilder()
 				.setName('xblstatus')
-				.setDescription('Get the status of LIVE for the Xbox 360.')
+				.setDescription('Get the status of Live for the Xbox 360.')
+				.toJSON(),
+			new SlashCommandBuilder()
+				.setName('xblerror')
+				.setDescription('Lookup an Xbox 360 Live error code.')
+				.addStringOption(option => option
+					.setName('code')
+					.setDescription('Lookup an error code.')
+					.setRequired(true)
+				)
 				.toJSON(),
 			new SlashCommandBuilder()
 				.setName('settings')
@@ -137,7 +146,7 @@ export class Util {
 			throw error;
 		});
 	};
-	
+
 	public static postWebhookMessage = (url: string, json = {}) => {
 		fetch(url, {
 			method: 'POST',
@@ -150,5 +159,5 @@ export class Util {
 		}).catch((error) => {
 			throw error;
 		});
-	}
+	};
 }
