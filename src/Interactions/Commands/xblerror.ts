@@ -25,8 +25,7 @@ module.exports = {
 			embeds: [
 				xbls.utils.defaultEmbed(client, xbls.Colors.BLUE)
 					.setTitle(`Xbox Live Error Code: ${code}`)
-					.setDescription(`Error Description:\n**${data}**`)
-					.setFooter({ text: 'Contributed by Tazhys' })
+					.setDescription(`__Error Description:__\n${data}`)
 			]
 		});
 	}
