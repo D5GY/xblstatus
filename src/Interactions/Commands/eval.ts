@@ -6,7 +6,9 @@ import config from '../../config';
 module.exports = {
 	name: 'eval',
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	async execute(interaction: ChatInputCommandInteraction, client: xbls) {
+	async execute(interaction: ChatInputCommandInteraction) {
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		const client = xbls;
 		if (!config.DEV_IDs.includes(interaction.user.id)) {
 			return interaction.reply({
 				content: 'You do not have permission to use this command.'
