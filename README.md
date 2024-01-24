@@ -4,6 +4,8 @@ A discord bot for bringing real time Xbox 360 status updates.
 # Commands
 
 - /xblstatus
+- /xblerror
+- /credits
 - /settings get - Displays the Configured Webhook
 - /settings edit - Edit the Webhook
 
