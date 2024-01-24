@@ -69,7 +69,7 @@ export function connectWS(client: xbls) {
 				const data: any = await xbls.database.query('SELECT * FROM settings');
 				if (!data) return;
 				data.map((i: SQLsettingsData) => {
-					xbls.utils.postStatusWebhookChange(AES.decrypt(i.webhookURL, config.CIPHER_KEY).toString(enc.Utf8), {
+					xbls.utils.postWebhookMessage(AES.decrypt(i.webhookURL, config.CIPHER_KEY).toString(enc.Utf8), {
 						color: xbls.Colors.BLUE,
 						author: { name: 'xblstatus.com', url: 'https://xblstatus.com', icon_url: client.user!.displayAvatarURL()! },
 						title: `Detected status change at time <t:${Math.floor(xbls.lastSocketUpdate / 1000)}:f>`,

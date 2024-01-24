@@ -137,20 +137,6 @@ export class Util {
 		else return customEmojis.BLACK;
 	};
 
-	public static postStatusWebhookChange = (url: string, json = {}) => {
-		fetch(url, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({
-				embeds: [json]
-			})
-		}).catch((error) => {
-			throw error;
-		});
-	};
-
 	public static postWebhookMessage = (url: string, json = {}) => {
 		fetch(url, {
 			method: 'POST',
