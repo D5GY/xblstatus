@@ -16,7 +16,7 @@ module.exports = {
 			embeds: [
 				xbls.utils.defaultEmbed(client, xbls.Colors.RED)
 					.setTitle(`Unknown Live Error Code: ${code}`)
-					.setDescription(`I was unable to find the error code, If you belive this is incorrect and we are missing the error you can join our ${hyperlink('support discord', config.MAIN_GUILD_INVITE_URL)}.`)
+					.setDescription(`I was unable to find the error code, If you believe this is incorrect and we are missing the error you can join our ${hyperlink('support discord', config.MAIN_GUILD_INVITE_URL)}.`)
 			]
 		});
 
