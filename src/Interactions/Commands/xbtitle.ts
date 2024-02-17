@@ -21,7 +21,7 @@ module.exports = {
 			]
 		});
 
-		if (data.length > 10) return await interaction.editReply({
+		if (data.length > 20) return await interaction.editReply({
 			embeds: [
 				xbls.utils.defaultEmbed(client, xbls.Colors.YELLOW)
 					.setDescription('There are too many results for this search, Try your search again with more specific keywords.')
