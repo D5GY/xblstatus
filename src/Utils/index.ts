@@ -38,6 +38,23 @@ export class Util {
 				)
 				.toJSON(),
 			new SlashCommandBuilder()
+				.setName('xbtitle')
+				.setDescription('Lookup an Xbox 360 TitleID or game.')
+				.addStringOption(option => option
+					.setName('search')
+					.setDescription('Find a title.')
+					.setRequired(true)
+				)
+				.addStringOption(option => option
+					.setName('type')
+					.setDescription('Search type either title name or ID. (default: id)')
+					.setChoices(
+						{ name: 'ID', value: 'id' },
+						{ name: 'Name', value: 'name' }
+					)
+				)
+				.toJSON(),
+			new SlashCommandBuilder()
 				.setName('settings')
 				.setDescription('xblStatus server settings.')
 				.setDefaultMemberPermissions(PermissionFlagsBits.Administrator)

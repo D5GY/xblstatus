@@ -20,3 +20,7 @@ export interface SQLErrorCodes {
     error: string;
     fix: string | null;
 }
+export interface SQLTitleIdData {
+    id: string;
+    name: string;
+}
