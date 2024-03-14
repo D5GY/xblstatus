@@ -8,12 +8,10 @@ module.exports = {
 		await interaction.deferReply({ ephemeral: false });
 		const title = interaction.options.getString('search', true).trim();
 		let type = interaction.options.getString('type', false);
-		if (!type) type = 'id';
+		if (!type) type = 'name';
 
-		const data = await xbls.database.query(`SELECT * FROM games WHERE ${type === 'id' ? type : 'name'} LIKE '%${title}%'`) as [SQLTitleIdData];
-
-		console.log(data);
-
+		const data = await xbls.database.query(`SELECT * FROM games WHERE ${type === 'name' ? type : 'id'} LIKE '%${title}%'`) as [SQLTitleIdData];
+		
 		if (!data.length) return await interaction.editReply({
 			embeds: [
 				xbls.utils.defaultEmbed(client, xbls.Colors.RED)

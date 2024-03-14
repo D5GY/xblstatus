@@ -47,7 +47,7 @@ export class Util {
 				)
 				.addStringOption(option => option
 					.setName('type')
-					.setDescription('Search type either title name or ID. (default: id)')
+					.setDescription('Search type either title name or ID. (default: name)')
 					.setChoices(
 						{ name: 'ID', value: 'id' },
 						{ name: 'Name', value: 'name' }
