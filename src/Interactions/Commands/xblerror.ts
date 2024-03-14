@@ -12,13 +12,19 @@ module.exports = {
 
 		const [data] = await xbls.database.query('SELECT * FROM codes WHERE code = ?', code) as [SQLErrorCodes];
 
-		if (!data) return await interaction.editReply({
-			embeds: [
-				xbls.utils.defaultEmbed(client, xbls.Colors.RED)
-					.setTitle(`Unknown Live Error Code: ${code}`)
-					.setDescription(`I was unable to find the error code, If you believe this is incorrect and we are missing the error you can join our ${hyperlink('support discord', config.MAIN_GUILD_INVITE_URL)}.`)
-			]
-		});
+		if (!data) {
+			xbls.utils.postWebhookMessage(config.WEBHOOKS.UNKNOWN_XBLERROR_CODE, {
+				color: xbls.Colors.YELLOW,
+				description: `Unknown Code: **${code}**\n\nGuild: ${interaction.guild?.name} : ${interaction.guild?.id}\nExecuted by: ${interaction.user} : ${interaction.user.id}`
+			});
+			return await interaction.editReply({
+				embeds: [
+					xbls.utils.defaultEmbed(client, xbls.Colors.RED)
+						.setTitle(`Unknown Live Error Code: ${code}`)
+						.setDescription(`I was unable to find the error code, If you believe this is incorrect and we are missing the error you can join our ${hyperlink('support discord', config.MAIN_GUILD_INVITE_URL)}.`)
+				]
+			});
+		}
 
 		await interaction.editReply({
 			embeds: [

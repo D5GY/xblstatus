@@ -25,6 +25,7 @@ export const config: {
 		SOCKET: string;
 		ERROR: string;
 		INTERACTION_USAGE: string;
+		UNKNOWN_XBLERROR_CODE: string;
 	};
 	CIPHER_KEY: string;
 	DISCORD_WEBHOOK_REGEX: RegExp;
