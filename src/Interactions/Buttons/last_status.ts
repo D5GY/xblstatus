@@ -1,12 +1,19 @@
 import { ButtonInteraction } from 'discord.js';
 import xbls from '../../Client';
 import { SQLsettingsData } from '../../Utils/types';
+import { CommandIDs } from '../../Utils/enums';
 
 module.exports = {
 	name: 'last_status',
 
 	async execute(interaction: ButtonInteraction, client: xbls) {
 		await interaction.deferUpdate();
+		xbls.database.query('INSERT INTO executed_commands (guild, user, timestamp, command) VALUES (?, ?, ?, ?)',
+			interaction.guild ? interaction.guild.id : null,
+			interaction.user.id,
+			Date.now(),
+			CommandIDs.LAST_STATUS
+		).catch(error => { throw error; });
 		const secsAgo: number = (Math.floor(Math.round(Date.now() / 1000 - xbls.lastSocketUpdate / 1000)));
 		const component = interaction.message.components[0].toJSON();
 		component.components[0].disabled = true;

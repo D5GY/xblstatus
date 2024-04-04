@@ -2,11 +2,18 @@ import { ChatInputCommandInteraction, hyperlink } from 'discord.js';
 import xbls from '../../Client';
 import config from '../../config';
 import { SQLErrorCodes } from '../../Utils/types';
+import { CommandIDs } from '../../Utils/enums';
 
 module.exports = {
 	name: 'xblerror',
 	async execute(interaction: ChatInputCommandInteraction, client: xbls) {
 		await interaction.deferReply({ ephemeral: false });
+		xbls.database.query('INSERT INTO executed_commands (guild, user, timestamp, command) VALUES (?, ?, ?, ?)',
+			interaction.guild ? interaction.guild.id : null,
+			interaction.user.id,
+			Date.now(),
+			CommandIDs.XBLERROR
+		).catch(error => {throw error;});
 		let code = interaction.options.getString('code', true).trim();
 		if (code.startsWith('0x')) code = code.split('0x')[1];
 

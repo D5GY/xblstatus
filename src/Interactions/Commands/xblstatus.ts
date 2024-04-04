@@ -2,6 +2,7 @@ import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteracti
 import xbls from '../../Client';
 import { SQLsettingsData } from '../../Utils/types';
 import config from '../../config';
+import { CommandIDs } from '../../Utils/enums';
 
 const LAST_STATUS_BUTTON = new ActionRowBuilder<ButtonBuilder>().addComponents(
 	[
@@ -17,6 +18,12 @@ module.exports = {
 	name: 'xblstatus',
 	async execute(interaction: ChatInputCommandInteraction, client: xbls) {
 		await interaction.deferReply({ ephemeral: false });
+		xbls.database.query('INSERT INTO executed_commands (guild, user, timestamp, command) VALUES (?, ?, ?, ?)',
+			interaction.guild ? interaction.guild.id : null,
+			interaction.user.id,
+			Date.now(),
+			CommandIDs.XBLSTATUS
+		).catch(error => {throw error;});
 		const secsAgo: number = (Math.floor(Math.round(Date.now() / 1000 - xbls.lastSocketUpdate / 1000)));
 
 		if (xbls.statusSocketErrored) {

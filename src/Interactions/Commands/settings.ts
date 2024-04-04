@@ -3,11 +3,18 @@ import xbls from '../../Client';
 import { AES, enc } from 'crypto-js';
 import { SQLsettingsData } from '../../Utils/types';
 import config from '../../config';
+import { CommandIDs } from '../../Utils/enums';
 
 module.exports = {
 	name: 'settings',
 	async execute(interaction: ChatInputCommandInteraction, client: xbls) {
 		await interaction.deferReply({ ephemeral: true });
+		xbls.database.query('INSERT INTO executed_commands (guild, user, timestamp, command) VALUES (?, ?, ?, ?)',
+			interaction.guild ? interaction.guild.id : null,
+			interaction.user.id,
+			Date.now(),
+			CommandIDs.SETTINGS
+		).catch(error => { throw error; });
 		const subCommand = interaction.options.getSubcommand(true) as 'get' | 'edit';
 
 		if (subCommand === 'get') {

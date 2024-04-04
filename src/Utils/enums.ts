@@ -21,3 +21,12 @@ export enum customEmojis {
 	BLACK = '<:xbls_000:1054485544391950486>',
 	GRAY = '<:xbls_ccc:1071244643313913906>'
 }
+export enum CommandIDs {
+	XBLSTATUS = 1,
+	XBLERROR,
+	XBLTITLE,
+	SETTINGS,
+	CREDITS,
+	EVAL,
+	LAST_STATUS
+}

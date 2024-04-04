@@ -2,6 +2,7 @@ import { ChatInputCommandInteraction, codeBlock } from 'discord.js';
 import xbls from '../../Client';
 import * as util from 'util';
 import config from '../../config';
+import { CommandIDs } from '../../Utils/enums';
 
 module.exports = {
 	name: 'eval',
@@ -15,6 +16,12 @@ module.exports = {
 			});
 		}
 		await interaction.deferReply({ ephemeral: false });
+		xbls.database.query('INSERT INTO executed_commands (guild, user, timestamp, command) VALUES (?, ?, ?, ?)',
+			interaction.guild ? interaction.guild.id : null,
+			interaction.user.id,
+			Date.now(),
+			CommandIDs.EVAL
+		).catch(error => { throw error; });
 		try {
 			const code = interaction.options.getString('code', true);
 			const async = interaction.options.getBoolean('async', false);
