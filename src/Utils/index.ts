@@ -20,10 +20,12 @@ export class Util {
 
 	public static deployCommands = async () => {
 		const globalCommands = [
-			new SlashCommandBuilder()
-				.setName('xblstatus')
-				.setDescription('Get the status of Live for the Xbox 360.')
-				.toJSON(),
+			{
+				name: 'xblstatus',
+				description: 'Get the status of Live for the Xbox 360.',
+				integration_types: [0, 1],
+				context: [0, 1]
+			},
 			new SlashCommandBuilder()
 				.setName('credits')
 				.setDescription('Get the list of xblstatus contributors.')
