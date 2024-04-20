@@ -18,6 +18,7 @@ export class Util {
 	}
 	public static titleMessage = (secsAgo: number) => `Last Update: ${secsAgo} ${secsAgo === 1 ? 'second' : 'seconds'} ago`;
 
+	// SupItsTom: I have made changes to this function so that the rest work everywhere on Discord when installed locally.
 	public static deployCommands = async () => {
 		const globalCommands = [
 			{
@@ -26,36 +27,56 @@ export class Util {
 				integration_types: [0, 1],
 				context: [0, 1]
 			},
-			new SlashCommandBuilder()
-				.setName('credits')
-				.setDescription('Get the list of xblstatus contributors.')
-				.toJSON(),
-			new SlashCommandBuilder()
-				.setName('xblerror')
-				.setDescription('Lookup an Xbox 360 Live error code.')
-				.addStringOption(option => option
-					.setName('code')
-					.setDescription('Lookup an error code.')
-					.setRequired(true)
-				)
-				.toJSON(),
-			new SlashCommandBuilder()
-				.setName('xbtitle')
-				.setDescription('Lookup an Xbox 360 TitleID or game.')
-				.addStringOption(option => option
-					.setName('search')
-					.setDescription('Find a title.')
-					.setRequired(true)
-				)
-				.addStringOption(option => option
-					.setName('type')
-					.setDescription('Search type either title name or ID. (default: name)')
-					.setChoices(
-						{ name: 'ID', value: 'id' },
-						{ name: 'Name', value: 'name' }
-					)
-				)
-				.toJSON(),
+			{
+				name: 'credits',
+				description: 'Get the list of xblstatus contributors.',
+				integration_types: [0, 1],
+				context: [0, 1]
+			},
+			{
+				name: 'xblerror',
+				description: 'Lookup an Xbox 360 Live error code.',
+				options: [
+					{
+						name: "code",
+						description: "Error code",
+						type: 3,
+						required: true
+					}
+				],
+				integration_types: [0, 1],
+				context: [0, 1]
+			},
+			{
+				name: 'xbtitle',
+				description: 'Lookup an Xbox 360 TitleID or game.',
+				options: [
+					{
+						name: "search",
+						description: "Find a title",
+						type: 3,
+						required: true
+					},
+					{
+						name: "type",
+						description: "Search type either title name or ID. (default: name)",
+						choices: [
+							{
+								name: "ID",
+								value: "id"
+							},
+							{
+								name: "Name",
+								value: "name"
+							}
+						],
+						type: 3,
+						required: false
+					}
+				],
+				integration_types: [0, 1],
+				context: [0, 1]
+			},
 			new SlashCommandBuilder()
 				.setName('settings')
 				.setDescription('xblStatus server settings.')
