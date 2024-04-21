@@ -63,7 +63,7 @@ export function connectWS(client: xbls) {
 			for (let i = 0; i < response.services.length; i++) {
 				xbls.currentStatus.push(response.services[i]);
 			}
-			if (JSON.stringify(xbls.oldStatus) !== JSON.stringify(xbls.currentStatus) && ++changedCount >= 3) {
+			if (JSON.stringify(xbls.oldStatus) !== JSON.stringify(xbls.currentStatus) && ++changedCount >= 5) {
 				changedCount = 0;
 				if (config.DEV_MODE || firstLaunch) return;
 				const data: any = await xbls.database.query('SELECT * FROM settings');
