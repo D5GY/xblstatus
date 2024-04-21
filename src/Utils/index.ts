@@ -38,8 +38,8 @@ export class Util {
 				description: 'Lookup an Xbox 360 Live error code.',
 				options: [
 					{
-						name: "code",
-						description: "Error code",
+						name: 'code',
+						description: 'Error code',
 						type: 3,
 						required: true
 					}
@@ -52,22 +52,22 @@ export class Util {
 				description: 'Lookup an Xbox 360 TitleID or game.',
 				options: [
 					{
-						name: "search",
-						description: "Find a title",
+						name: 'search',
+						description: 'Find a title',
 						type: 3,
 						required: true
 					},
 					{
-						name: "type",
-						description: "Search type either title name or ID. (default: name)",
+						name: 'type',
+						description: 'Search type either title name or ID. (default: name)',
 						choices: [
 							{
-								name: "ID",
-								value: "id"
+								name: 'ID',
+								value: 'id'
 							},
 							{
-								name: "Name",
-								value: "name"
+								name: 'Name',
+								value: 'name'
 							}
 						],
 						type: 3,
