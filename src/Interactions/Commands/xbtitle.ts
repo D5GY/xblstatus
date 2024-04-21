@@ -17,6 +17,14 @@ module.exports = {
 		let type = interaction.options.getString('type', false);
 		if (!type) type = 'name';
 
+		const regex = /^[A-Za-z0-9\s\\$&():./\\]+$/;
+		if (!regex.test(title)) return await interaction.editReply({
+			embeds: [
+				xbls.utils.defaultEmbed(client, xbls.Colors.YELLOW)
+					.setDescription('Invalid search, You included an illegal character.')
+			]
+		});
+
 		const data = await xbls.database.query(`SELECT * FROM games WHERE ${type === 'name' ? type : 'id'} LIKE '%${title}%'`) as [SQLTitleIdData];
 
 		if (!data.length) return await interaction.editReply({
