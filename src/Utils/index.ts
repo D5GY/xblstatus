@@ -25,13 +25,13 @@ export class Util {
 				name: 'xblstatus',
 				description: 'Get the status of Live for the Xbox 360.',
 				integration_types: [0, 1],
-				context: [0, 1]
+				context: [0, 1, 2]
 			},
 			{
 				name: 'credits',
 				description: 'Get the list of xblstatus contributors.',
 				integration_types: [0, 1],
-				context: [0, 1]
+				context: [0, 1, 2]
 			},
 			{
 				name: 'xblerror',
@@ -45,7 +45,7 @@ export class Util {
 					}
 				],
 				integration_types: [0, 1],
-				context: [0, 1]
+				context: [0, 1, 2]
 			},
 			{
 				name: 'xbtitle',
@@ -75,7 +75,7 @@ export class Util {
 					}
 				],
 				integration_types: [0, 1],
-				context: [0, 1]
+				context: [0, 1, 2]
 			},
 			new SlashCommandBuilder()
 				.setName('settings')
