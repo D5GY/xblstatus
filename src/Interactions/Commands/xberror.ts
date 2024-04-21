@@ -27,7 +27,7 @@ module.exports = {
 			return await interaction.editReply({
 				embeds: [
 					xbls.utils.defaultEmbed(client, xbls.Colors.RED)
-						.setTitle(`Unknown Live Error Code: ${code}`)
+						.setTitle(`Unknown Error Code: ${code}`)
 						.setDescription(`I was unable to find the error code, If you believe this is incorrect and we are missing the error you can join our ${hyperlink('support discord', config.MAIN_GUILD_INVITE_URL)}.`)
 				]
 			});
@@ -36,7 +36,7 @@ module.exports = {
 		await interaction.editReply({
 			embeds: [
 				xbls.utils.defaultEmbed(client, xbls.Colors.BLUE)
-					.setTitle(`Xbox Live Error Code: ${code}`)
+					.setTitle(`Xbox Error Code: ${code}`)
 					.setDescription(`__Error Name:__\n${data.error}${typeof data.fix === 'string' ? `\n\n__Possible solution:__\n${data.fix}` : ''}`)
 			]
 		});

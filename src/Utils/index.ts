@@ -34,8 +34,8 @@ export class Util {
 				context: [0, 1, 2]
 			},
 			{
-				name: 'xblerror',
-				description: 'Lookup an Xbox 360 Live error code.',
+				name: 'xberror',
+				description: 'Lookup an Xbox 360 error code.',
 				options: [
 					{
 						name: 'code',
