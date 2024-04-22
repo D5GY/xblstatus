@@ -5,7 +5,7 @@ import { SQLErrorCodes } from '../../Utils/types';
 import { CommandIDs } from '../../Utils/enums';
 
 module.exports = {
-	name: 'xblerror',
+	name: 'xberror',
 	async execute(interaction: ChatInputCommandInteraction, client: xbls) {
 		await interaction.deferReply({ ephemeral: false });
 		xbls.database.query('INSERT INTO executed_commands (guild, user, timestamp, command) VALUES (?, ?, ?, ?)',
