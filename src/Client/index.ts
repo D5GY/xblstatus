@@ -17,6 +17,7 @@ export default class xbls extends Client {
 	public static statusSocketErrored: boolean = false;
 	public static currentStatus: Array<WSArrayData> = [];
 	public static oldStatus: Array<WSArrayData> = [];
+	public static lastSentStatus: Array<WSArrayData> = [];
 	public static database: Database = new Database();
 	public static error = new WebhookClient({ url: this.config.WEBHOOKS.ERROR });
 

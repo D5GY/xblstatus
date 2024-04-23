@@ -63,11 +63,12 @@ export function connectWS(client: xbls) {
 			for (let i = 0; i < response.services.length; i++) {
 				xbls.currentStatus.push(response.services[i]);
 			}
-			if (JSON.stringify(xbls.oldStatus) !== JSON.stringify(xbls.currentStatus) && ++changedCount >= 5) {
+			if (JSON.stringify(xbls.oldStatus) !== JSON.stringify(xbls.currentStatus) && ++changedCount >= 10 && JSON.stringify(xbls.currentStatus) !== JSON.stringify(xbls.lastSentStatus)) {
 				changedCount = 0;
 				if (config.DEV_MODE || firstLaunch) return;
 				const data: any = await xbls.database.query('SELECT * FROM settings');
 				if (!data) return;
+				xbls.lastSentStatus = xbls.currentStatus;
 				data.map((i: SQLsettingsData) => {
 					xbls.utils.postWebhookMessage(AES.decrypt(i.webhookURL, config.CIPHER_KEY).toString(enc.Utf8), {
 						color: xbls.Colors.BLUE,
