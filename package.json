@@ -1,6 +1,6 @@
 {
   "name": "xblstatus",
-  "version": "1.5.3",
+  "version": "1.5.4",
   "description": "A discord bot for bringing real time Xbox 360 status updates.",
   "main": "build/index.js",
   "scripts": {
