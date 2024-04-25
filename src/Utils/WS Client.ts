@@ -57,6 +57,8 @@ export function connectWS(client: xbls) {
 	statusWS.on('message', async (data: websocket.RawData) => {
 		const response = JSON.parse(Buffer.from(data.toString()).toString('utf8'));
 		if (response.message_type === 'xbl_status') {
+			xbls.utils.dbglog(JSON .stringify(response));
+			xbls.utils.dbglog('Current change count:', changedCount);
 			xbls.oldStatus = xbls.currentStatus;
 			xbls.currentStatus = [];
 			xbls.lastSocketUpdate = Date.now();

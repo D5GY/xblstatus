@@ -145,6 +145,11 @@ client.on('warn', (message) => {
 		throw error;
 	});
 });
+if (xbls.config.DEV_MODE) {
+	client.on('debug', (message) => {
+		xbls.utils.dbglog(message);
+	});
+}
 process.on('uncaughtException', (error) => {
 	console.error(error);
 	xbls.error.send({
