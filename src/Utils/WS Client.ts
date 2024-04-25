@@ -57,28 +57,35 @@ export function connectWS(client: xbls) {
 	statusWS.on('message', async (data: websocket.RawData) => {
 		const response = JSON.parse(Buffer.from(data.toString()).toString('utf8'));
 		if (response.message_type === 'xbl_status') {
-			xbls.utils.dbglog(JSON .stringify(response));
-			xbls.utils.dbglog('Current change count:', changedCount);
+			xbls.utils.dbglog(JSON.stringify(response));
 			xbls.oldStatus = xbls.currentStatus;
 			xbls.currentStatus = [];
 			xbls.lastSocketUpdate = Date.now();
 			for (let i = 0; i < response.services.length; i++) {
 				xbls.currentStatus.push(response.services[i]);
 			}
-			if (JSON.stringify(xbls.oldStatus) !== JSON.stringify(xbls.currentStatus) && ++changedCount >= 10 && JSON.stringify(xbls.currentStatus) !== JSON.stringify(xbls.lastSentStatus)) {
-				changedCount = 0;
-				if (config.DEV_MODE || firstLaunch) return;
-				const data: any = await xbls.database.query('SELECT * FROM settings');
-				if (!data) return;
-				xbls.lastSentStatus = xbls.currentStatus;
-				data.map((i: SQLsettingsData) => {
-					xbls.utils.postWebhookMessage(AES.decrypt(i.webhookURL, config.CIPHER_KEY).toString(enc.Utf8), {
-						color: xbls.Colors.BLUE,
-						author: { name: 'xblstatus.com', url: 'https://xblstatus.com', icon_url: client.user!.displayAvatarURL()! },
-						title: `Detected status change at time <t:${Math.floor(xbls.lastSocketUpdate / 1000)}:f>`,
-						description: xbls.currentStatus.map(data => `${xbls.utils.getEmoji(data.color)}  ${data.name} - ${data.description}`).join('\n')
+
+			if (JSON.stringify(xbls.oldStatus) === JSON.stringify(xbls.currentStatus)) {
+				changedCount++;
+				xbls.utils.dbglog('Status are the same increased number', changedCount);
+				if (JSON.stringify(xbls.currentStatus) !== JSON.stringify(xbls.lastSentStatus) && changedCount >= 5) {
+					xbls.utils.dbglog('Automatic status change webhook sent ', changedCount);
+					if (config.DEV_MODE || firstLaunch) return;
+					const data: any = await xbls.database.query('SELECT * FROM settings');
+					if (!data) return;
+					xbls.lastSentStatus = xbls.currentStatus;
+					data.map((i: SQLsettingsData) => {
+						xbls.utils.postWebhookMessage(AES.decrypt(i.webhookURL, config.CIPHER_KEY).toString(enc.Utf8), {
+							color: xbls.Colors.BLUE,
+							author: { name: 'xblstatus.com', url: 'https://xblstatus.com', icon_url: client.user!.displayAvatarURL()! },
+							title: `Detected status change at time <t:${Math.floor(xbls.lastSocketUpdate / 1000)}:f>`,
+							description: xbls.currentStatus.map(data => `${xbls.utils.getEmoji(data.color)}  ${data.name} - ${data.description}`).join('\n')
+						});
 					});
-				});
+				}
+			} else {
+				changedCount = 0;
+				xbls.utils.dbglog('Status are not the same, changedCount reset.', changedCount);
 			}
 			firstLaunch = false;
 		}
