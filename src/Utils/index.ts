@@ -25,13 +25,13 @@ export class Util {
 				name: 'xblstatus',
 				description: 'Get the status of Live for the Xbox 360.',
 				integration_types: [0, 1],
-				context: [0, 1, 2]
+				contexts: [0, 1, 2]
 			},
 			{
 				name: 'credits',
 				description: 'Get the list of xblstatus contributors.',
 				integration_types: [0, 1],
-				context: [0, 1, 2]
+				contexts: [0, 1, 2]
 			},
 			{
 				name: 'xberror',
@@ -45,7 +45,7 @@ export class Util {
 					}
 				],
 				integration_types: [0, 1],
-				context: [0, 1, 2]
+				contexts: [0, 1, 2]
 			},
 			{
 				name: 'xbtitle',
@@ -75,7 +75,7 @@ export class Util {
 					}
 				],
 				integration_types: [0, 1],
-				context: [0, 1, 2]
+				contexts: [0, 1, 2]
 			},
 			new SlashCommandBuilder()
 				.setName('settings')
@@ -123,6 +123,8 @@ export class Util {
 				)
 				.toJSON()
 		];
+		this.dbglog(JSON.stringify(globalCommands));
+		this.dbglog(JSON.stringify(guildCommands));
 		const token = config.DEV_MODE ? config.DEV_TOKEN : config.PRODUCTION_TOKEN;
 		const rest = new REST({ version: '10' }).setToken(token);
 		await rest.put(Routes.applicationCommands(Buffer.from(token.split('.')[0], 'base64').toString()), {
@@ -189,5 +191,9 @@ export class Util {
 		}).catch((error) => {
 			throw error;
 		});
+	};
+
+	public static dbglog = (...args: any) => {
+		if (xbls.config.DEV_MODE) return console.log(`DEBUG: ${args}`);
 	};
 }
