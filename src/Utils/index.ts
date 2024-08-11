@@ -179,17 +179,21 @@ export class Util {
 		else return customEmojis.BLACK;
 	};
 
-	public static postWebhookMessage = (url: string, json = {}) => {
-		fetch(url, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({
-				embeds: [json]
-			})
-		}).catch((error) => {
-			throw error;
+	public static postWebhookMessage = async(url: string, json = {}) => {
+		await new Promise(resolve => setTimeout(resolve, Math.floor(Math.random() * (120 - 1) + 120) * 1000)).then(async() => {
+			await fetch(url, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					embeds: [json]
+				})
+			}).catch((error) => {
+				console.log('error sending webhook', url);
+				console.error(error);
+				throw error;
+			}).then(() => this.dbglog('sent', url));
 		});
 	};
 
