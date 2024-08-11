@@ -18,8 +18,8 @@
   },
   "homepage": "https://github.com/D5GY/xblstatus#readme",
   "dependencies": {
-    "@discordjs/rest": "^1.5.0",
-    "@types/node": "^20.8.4",
+    "@discordjs/rest": "^2.3.0",
+    "@types/node": "^22.2.0",
     "crypto-js": "^4.1.1",
     "discord-api-types": "^0.37.35",
     "discord.js": "^14.11.0",
@@ -34,7 +34,7 @@
     "@types/node-fetch": "^2.6.2",
     "@types/ws": "^8.5.4",
     "@typescript-eslint/eslint-plugin": "^5.62.0",
-    "@typescript-eslint/parser": "^5.62.0",
+    "@typescript-eslint/parser": "^8.0.1",
     "eslint": "^8.33.0"
   }
 }
