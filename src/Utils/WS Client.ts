@@ -74,13 +74,19 @@ export function connectWS(client: xbls) {
 					const data: any = await xbls.database.query('SELECT * FROM settings');
 					if (!data) return;
 					xbls.lastSentStatus = xbls.currentStatus;
-					data.map((i: SQLsettingsData) => {
-						xbls.utils.postWebhookMessage(AES.decrypt(i.webhookURL, config.CIPHER_KEY).toString(enc.Utf8), {
-							color: xbls.Colors.BLUE,
-							author: { name: 'xblstatus.com', url: 'https://xblstatus.com', icon_url: client.user!.displayAvatarURL()! },
-							title: `Detected status change at time <t:${Math.floor(xbls.lastSocketUpdate / 1000)}:f>`,
-							description: xbls.currentStatus.map(data => `${xbls.utils.getEmoji(data.color)}  ${data.name} - ${data.description}`).join('\n')
-						});
+					data.map(async(i: SQLsettingsData) => {
+						if (i.webhookURL == null) return;
+						try {
+							await xbls.utils.postWebhookMessage(AES.decrypt(i.webhookURL, config.CIPHER_KEY).toString(enc.Utf8), {
+								color: xbls.Colors.BLUE,
+								author: { name: 'xblstatus.com', url: 'https://xblstatus.com', icon_url: client.user!.displayAvatarURL()! },
+								title: `Detected status change at time <t:${Math.floor(xbls.lastSocketUpdate / 1000)}:f>`,
+								description: xbls.currentStatus.map(data => `${xbls.utils.getEmoji(data.color)}  ${data.name} - ${data.description}`).join('\n')
+							});
+						} catch (error) {
+							console.warn('error postWebhookMessage()', i.webhookURL, config.CIPHER_KEY);
+							console.error(error);
+						}
 					});
 				}
 			} else {

@@ -3,6 +3,7 @@ import { Snowflake } from 'discord.js';
 export const config: {
 	DEV_MODE: boolean;
 	DEV_TOKEN: Snowflake;
+	DEBUG_MODE: boolean;
 	DEV_IDs: Snowflake[];
 	MAIN_GUILD: Snowflake;
 	PRODUCTION_TOKEN: Snowflake;

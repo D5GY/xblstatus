@@ -1,4 +1,9 @@
-import { EmbedBuilder, SlashCommandBuilder, Client, Collection } from 'discord.js';
+import {
+	EmbedBuilder,
+	SlashCommandBuilder,
+	Client,
+	Collection,
+} from 'discord.js';
 import { REST } from '@discordjs/rest';
 import { PermissionFlagsBits, Routes } from 'discord-api-types/v10';
 import { readdirSync } from 'fs';
@@ -14,24 +19,28 @@ export class Util {
 	public static defaultEmbed(client: xbls, color: number) {
 		return new EmbedBuilder()
 			.setColor(color)
-			.setAuthor({ name: 'xblstatus.com', url: this.XBLS_URL, iconURL: client.user!.displayAvatarURL()! });
+			.setAuthor({
+				name: 'xblstatus.com',
+				url: this.XBLS_URL,
+				iconURL: client.user!.displayAvatarURL()!,
+			});
 	}
-	public static titleMessage = (secsAgo: number) => `Last Update: ${secsAgo} ${secsAgo === 1 ? 'second' : 'seconds'} ago`;
+	public static titleMessage = (secsAgo: number) =>
+		`Last Update: ${secsAgo} ${secsAgo === 1 ? 'second' : 'seconds'} ago`;
 
-	// SupItsTom: I have made changes to this function so that the rest work everywhere on Discord when installed locally.
 	public static deployCommands = async () => {
 		const globalCommands = [
 			{
 				name: 'xblstatus',
 				description: 'Get the status of Live for the Xbox 360.',
 				integration_types: [0, 1],
-				contexts: [0, 1, 2]
+				contexts: [0, 1, 2],
 			},
 			{
 				name: 'credits',
 				description: 'Get the list of xblstatus contributors.',
 				integration_types: [0, 1],
-				contexts: [0, 1, 2]
+				contexts: [0, 1, 2],
 			},
 			{
 				name: 'xberror',
@@ -41,11 +50,11 @@ export class Util {
 						name: 'code',
 						description: 'Error code',
 						type: 3,
-						required: true
-					}
+						required: true,
+					},
 				],
 				integration_types: [0, 1],
-				contexts: [0, 1, 2]
+				contexts: [0, 1, 2],
 			},
 			{
 				name: 'xbtitle',
@@ -55,7 +64,7 @@ export class Util {
 						name: 'search',
 						description: 'Find a title',
 						type: 3,
-						required: true
+						required: true,
 					},
 					{
 						name: 'type',
@@ -63,93 +72,113 @@ export class Util {
 						choices: [
 							{
 								name: 'ID',
-								value: 'id'
+								value: 'id',
 							},
 							{
 								name: 'Name',
-								value: 'name'
-							}
+								value: 'name',
+							},
 						],
 						type: 3,
-						required: false
-					}
+						required: false,
+					},
 				],
 				integration_types: [0, 1],
-				contexts: [0, 1, 2]
+				contexts: [0, 1, 2],
 			},
 			new SlashCommandBuilder()
 				.setName('settings')
 				.setDescription('xblStatus server settings.')
 				.setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
 				.setDMPermission(false)
-				.addSubcommand(option => option
-					.setName('get')
-					.setDescription('Display your guild settings.')
+				.addSubcommand((option) =>
+					option.setName('get').setDescription('Display your guild settings.')
 				)
-				.addSubcommand(option => option
-					.setName('edit')
-					.setDescription('Edit your guild settings.')
-					.addStringOption(input => input
-						.setName('setting')
-						.setDescription('Select the setting you want to edit.')
-						.addChoices(
-							{ name: 'xblStatus change webhook', value: 'webhook' },
-							{ name: 'xblStatus change emoji type', value: 'emoji' }
+				.addSubcommand((option) =>
+					option
+						.setName('edit')
+						.setDescription('Edit your guild settings.')
+						.addStringOption((input) =>
+							input
+								.setName('setting')
+								.setDescription('Select the setting you want to edit.')
+								.addChoices(
+									{ name: 'xblStatus change webhook', value: 'webhook' },
+									{ name: 'xblStatus change emoji type', value: 'emoji' }
+								)
+								.setRequired(true)
 						)
-						.setRequired(true)
-					)
-					.addStringOption(input => input
-						.setName('value')
-						.setDescription('Set the value of your selected setting.')
-						.setRequired(true)
-					)
+						.addStringOption((input) =>
+							input
+								.setName('value')
+								.setDescription('Set the value of your selected setting.')
+								.setRequired(true)
+						)
 				)
-				.toJSON()
+				.toJSON(),
 		];
 		const guildCommands = [
 			new SlashCommandBuilder()
 				.setName('eval')
 				.setDescription('execute code')
 				.setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
-				.addStringOption(input => input
-					.setName('code')
-					.setDescription('The code you want to execute')
-					.setRequired(true)
+				.addStringOption((input) =>
+					input
+						.setName('code')
+						.setDescription('The code you want to execute')
+						.setRequired(true)
 				)
-				.addBooleanOption(input => input
-					.setName('async')
-					.setDescription('asynchronously execute code')
-					.setRequired(false)
+				.addBooleanOption((input) =>
+					input
+						.setName('async')
+						.setDescription('asynchronously execute code')
+						.setRequired(false)
 				)
-				.toJSON()
+				.toJSON(),
 		];
 		this.dbglog(JSON.stringify(globalCommands));
 		this.dbglog(JSON.stringify(guildCommands));
 		const token = config.DEV_MODE ? config.DEV_TOKEN : config.PRODUCTION_TOKEN;
 		const rest = new REST({ version: '10' }).setToken(token);
-		await rest.put(Routes.applicationCommands(Buffer.from(token.split('.')[0], 'base64').toString()), {
-			body: globalCommands
-		});
-		await rest.put(Routes.applicationGuildCommands(Buffer.from(token.split('.')[0], 'base64').toString(), config.MAIN_GUILD), {
-			body: guildCommands
-		});
+		await rest.put(
+			Routes.applicationCommands(
+				Buffer.from(token.split('.')[0], 'base64').toString()
+			),
+			{
+				body: globalCommands,
+			}
+		);
+		await rest.put(
+			Routes.applicationGuildCommands(
+				Buffer.from(token.split('.')[0], 'base64').toString(),
+				config.MAIN_GUILD
+			),
+			{
+				body: guildCommands,
+			}
+		);
 		console.log('Interaction Global & Guild Commands Set');
 	};
 
-	public static loadInteractions = async (commandCollection: Collection<string, any>, buttonCollection: Collection<string, any>) => {
+	public static loadInteractions = async (
+		commandCollection: Collection<string, any>,
+		buttonCollection: Collection<string, any>
+	) => {
 		const interactionDir = `${__dirname}/../Interactions`;
 		const interactionTypes = readdirSync(interactionDir);
 		for (const interactionType of interactionTypes) {
 			if (interactionType == 'Commands') {
 				const cmdFiles = readdirSync(`${interactionDir}/${interactionType}`);
 				for (const cmdFile of cmdFiles) {
-					const cmd = await require(`${interactionDir}/${interactionType}/${cmdFile}`);
+					const cmd =
+						await require(`${interactionDir}/${interactionType}/${cmdFile}`);
 					commandCollection.set(cmd.name, cmd);
 				}
 			} else if (interactionType == 'Buttons') {
 				const btnFiles = readdirSync(`${interactionDir}/${interactionType}`);
 				for (const btnFile of btnFiles) {
-					const btn = await require(`${interactionDir}/${interactionType}/${btnFile}`);
+					const btn =
+						await require(`${interactionDir}/${interactionType}/${btnFile}`);
 					buttonCollection.set(btn.name, btn);
 				}
 			}
@@ -179,25 +208,31 @@ export class Util {
 		else return customEmojis.BLACK;
 	};
 
-	public static postWebhookMessage = async(url: string, json = {}) => {
-		await new Promise(resolve => setTimeout(resolve, Math.floor(Math.random() * (120 - 1) + 120) * 1000)).then(async() => {
+	public static postWebhookMessage = async (url: string, json = {}) => {
+		await new Promise((resolve) =>
+			setTimeout(resolve, Math.floor(Math.random() * (120 - 1) + 120) * 1000)
+		).then(async () => {
+			console.log('Attempting to send', url);
 			await fetch(url, {
 				method: 'POST',
 				headers: {
-					'Content-Type': 'application/json'
+					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify({
-					embeds: [json]
+					embeds: [json],
+					username: 'xblstatus.com',
+				}),
+			})
+				.catch((error) => {
+					console.log('error sending webhook', url);
+					console.error(error);
+					throw error;
 				})
-			}).catch((error) => {
-				console.log('error sending webhook', url);
-				console.error(error);
-				throw error;
-			}).then(() => this.dbglog('sent', url));
+				.then(() => console.log('sent', url));
 		});
 	};
 
 	public static dbglog = (...args: any) => {
-		if (xbls.config.DEV_MODE) return console.log(`DEBUG: ${args}`);
+		if (xbls.config.DEBUG_MODE) return console.log(`DEBUG: ${args}`);
 	};
 }
