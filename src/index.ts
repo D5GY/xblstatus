@@ -12,7 +12,6 @@ client.on(Events.ClientReady, async () => {
 	await xbls.utils.deployCommands().catch(error => console.error(error));
 	await xbls.utils.loadInteractions(xbls.commands, xbls.buttons).catch(error => console.error(error)).then(() => console.log('Loaded Interactions'));
 	connectWS(client);
-	await xbls.database.connect().catch((error: Error) => console.error(error)).then(() => console.log('Connected To Database'));
 });
 
 const INTERACTION_USAGE_WEBHOOK = new WebhookClient({ url: config.WEBHOOKS.INTERACTION_USAGE });
@@ -44,7 +43,7 @@ client.on(Events.InteractionCreate, async interaction => {
 		} catch (error: any) {
 			if (error.name === 'DiscordAPIError[10062]') return;
 			console.error(error);
-			interaction.channel?.send({
+			await interaction.reply({
 				embeds: [
 					xbls.utils.defaultEmbed(client, xbls.Colors.RED)
 						.setDescription(`An unknown error occurred, join our ${hyperlink('support discord', config.MAIN_GUILD_INVITE_URL)} and report it! [interactionExecuted.execute()]`)
@@ -67,7 +66,7 @@ client.on(Events.InteractionCreate, async interaction => {
 		} catch (error: any) {
 			if (error.name === 'DiscordAPIError[10062]') return;
 			console.error(error);
-			interaction.channel?.send({
+			await interaction.reply({
 				embeds: [
 					xbls.utils.defaultEmbed(client, xbls.Colors.RED)
 						.setDescription(`An unknown error occurred, join our ${hyperlink('support discord', config.MAIN_GUILD_INVITE_URL)} and report it! [buttonExecuted.execute()]`)
