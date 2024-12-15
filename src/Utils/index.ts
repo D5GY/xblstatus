@@ -9,7 +9,7 @@ import { PermissionFlagsBits, Routes } from 'discord-api-types/v10';
 import { readdirSync } from 'fs';
 import xbls from '../Client';
 import { customEmojis, defaultEmojis } from './enums';
-import fetch from 'node-fetch';
+import axios from 'axios';
 import config from '../config';
 
 export class Util {
@@ -213,19 +213,19 @@ export class Util {
 			setTimeout(resolve, Math.floor(Math.random() * (120 - 1) + 120) * 1000)
 		).then(async () => {
 			console.log('Attempting to send', url);
-			await fetch(url, {
+			await axios(url, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify({
+				data: JSON.stringify({
 					embeds: [json],
 					username: 'xblstatus.com',
 				}),
 			})
 				.catch((error) => {
 					console.log('error sending webhook', url);
-					console.error(error);
+					this.dbglog(error);
 					throw error;
 				})
 				.then(() => console.log('sent', url));
