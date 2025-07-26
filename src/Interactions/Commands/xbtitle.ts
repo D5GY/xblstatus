@@ -14,8 +14,8 @@ module.exports = {
 			CommandIDs.XBLTITLE
 		).catch(error => { throw error; });
 		const title = interaction.options.getString('search', true).trim();
-		let type = interaction.options.getString('type', false);
-		if (!type) type = 'name';
+		let type = 'name';
+		if (xbls.utils.isTitleID(title)) type = 'id';
 
 		const regex = /^[A-Za-z0-9\s\\$&():./\\]+$/;
 		if (!regex.test(title)) return await interaction.editReply({
